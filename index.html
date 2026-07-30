@@ -1,0 +1,237 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>CT Insurer Command Page</title>
+<style>
+:root{--bg:#f5f6f8;--surface:#fff;--ink:#182031;--ink2:#4a5568;--ink3:#8492a6;--line:#e5e9ef;--good:#1e7d4f;--goodb:#e4f4ea;--build:#2b5c9a;--buildb:#e8effb;--warn:#9a6700;--warnb:#fdf3d4;--crit:#b3261e;--critb:#fbe9e7;--grey:#5b6472;--greyb:#eef1f5;--accent:#2751a3;--accentb:#e8eefb;--navy:#0d1b36;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);padding:26px;line-height:1.45}
+.wrap{max-width:1180px;margin:0 auto}
+h1{font-size:22px;font-weight:700;color:var(--navy)}
+.sub{color:var(--ink2);font-size:13px;margin-top:4px;max-width:880px}
+.updated{display:inline-block;margin-top:8px;font-size:12px;color:var(--ink3)}
+.stitle{font-size:13px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.05em;margin:24px 0 10px}
+table.sum{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:13px}
+table.sum thead th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3);padding:8px 10px;border-bottom:1px solid var(--line);background:#fafbfc}
+table.sum thead th.c,table.sum td.c{text-align:center}
+table.sum td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+table.sum tr:last-child td{border-bottom:none}
+table.sum td.red{color:var(--crit);font-weight:700} .muted{color:var(--ink3)} .z{color:var(--ink3)}
+.grp{border-left:2px solid var(--line)}
+.note{font-size:11px;color:var(--ink3)}
+.pr{font-size:10px;font-weight:700;padding:1px 6px;border-radius:5px}
+.pr.p0{background:var(--critb);color:var(--crit)} .pr.p1{background:var(--warnb);color:var(--warn)} .pr.p2{background:var(--greyb);color:var(--grey)}
+.icard{background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:14px 16px;margin-bottom:12px}
+.ihead{font-size:15px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:4px}
+.dchip{font-size:11px;font-weight:600;background:var(--accentb);color:var(--accent);padding:2px 9px;border-radius:999px;margin-left:auto}
+.mrow{border-top:1px solid var(--line);padding:10px 0 6px}
+.mline{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13.5px}
+.mc{font-weight:700;color:var(--ink2);font-size:12px} .mt{font-weight:600}
+.prod{font-size:10.5px;font-weight:600;color:var(--accent);background:var(--accentb);padding:1px 7px;border-radius:5px}
+.stg{font-size:11.5px;color:var(--ink3)}
+.sig{font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;margin-left:auto}
+.sig.build{background:var(--buildb);color:var(--build)} .sig.warn{background:var(--warnb);color:var(--warn)} .sig.crit{background:var(--critb);color:var(--crit)} .sig.good{background:var(--goodb);color:var(--good)} .sig.grey{background:var(--greyb);color:var(--grey)}
+.sub{margin:5px 0 2px 6px;display:flex;gap:8px}
+.sub .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3);min-width:44px;padding-top:3px}
+.sub ul{list-style:none;margin:0;padding:0;flex:1}
+.sub li{font-size:12.5px;padding:2px 0;border-bottom:1px dotted #eef0f3}
+.sub li:last-child{border-bottom:none}
+.badge{font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:4px}
+.badge.escalated{background:var(--critb);color:var(--crit)} .badge.progress{background:var(--accentb);color:var(--accent)} .badge.new{background:var(--buildb);color:var(--build)}
+.due{font-size:11px;color:var(--ink3);font-variant-numeric:tabular-nums}
+.tp{font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:4px;background:var(--greyb);color:var(--grey)}
+.tp.highest{background:var(--critb);color:var(--crit)} .tp.high{background:var(--warnb);color:var(--warn)}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+.foot{margin-top:16px;font-size:12px;color:var(--ink3)}
+.legend{font-size:11.5px;color:var(--ink2);margin-top:6px}
+.hrow{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.rbtn{font-size:12.5px;font-weight:700;color:#fff;background:#2751a3;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;white-space:nowrap}
+.rbtn:hover{background:#1d3f80}
+.rmeta{font-size:11px;color:var(--ink3);text-align:right;margin-top:3px}
+</style></head><body><div class="wrap">
+<h1>CT Insurer Command Page</h1>
+<div class="sub">One page per insurer. Desk shows <b>open tickets only</b>, split into IT (Ethos platform), Ops (insurer medical operations) and Client (individual-client queries). Milestones, issues and tasks come from CRM. Every row links straight to its Zoho record.</div>
+<span class="updated">Last updated: Tue 28 Jul 2026, 18:40 IST &middot; Source: Zoho CRM + Zoho Desk (open tickets, org Cardiotrack)</span>
+
+<div class="stitle">Summary &middot; by insurer</div>
+<table class="sum"><thead><tr><th>Insurer</th><th>Pr.</th><th class="c grp">Desk IT</th><th class="c">Desk Ops</th><th class="c">Desk Client</th><th class="c grp">Milestones</th><th class="c">Open issues</th><th class="c">Tasks</th></tr></thead>
+<tbody>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000014075025" target="_blank">Aditya Birla Sun Life</a></td><td><span class="pr p0">P0</span></td><td class="c"><a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000008490454" target="_blank">1</a></td><td class="c red"><a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000008490454" target="_blank">39</a></td><td class="c"><span class="z">0</span></td><td class="c">1</td><td class="c red">6</td><td class="c">5</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000019312002" target="_blank">Bajaj Life</a></td><td><span class="pr p0">P0</span></td><td class="c"><a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000065918137" target="_blank">1</a></td><td class="c red"><a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000065918137" target="_blank">17</a></td><td class="c"><span class="z">0</span></td><td class="c">2</td><td class="c red">13</td><td class="c">3</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000021038001" target="_blank">Canara HSBC Life</a></td><td><span class="pr p0">P0</span></td><td class="c"><span class="z">0</span></td><td class="c red"><a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000008490559" target="_blank">15</a></td><td class="c"><span class="z">0</span></td><td class="c">1</td><td class="c red">2</td><td class="c">5</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000014075169" target="_blank">Tata AIA Life</a></td><td><span class="pr p0">P0</span></td><td class="c"><span class="muted">n/a</span></td><td class="c "><span class="muted">n/a</span></td><td class="c"><span class="muted">n/a</span></td><td class="c">3</td><td class="c muted">0</td><td class="c">3</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000018768008" target="_blank">Policy Bazaar</a></td><td><span class="pr p0">P0</span></td><td class="c"><span class="muted">n/a</span></td><td class="c "><span class="muted">n/a</span></td><td class="c"><span class="muted">n/a</span></td><td class="c">1</td><td class="c muted">0</td><td class="c">2</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000020775001" target="_blank">Thyrocare</a></td><td><span class="pr p0">P0</span></td><td class="c"><span class="muted">n/a</span></td><td class="c "><span class="muted">n/a</span></td><td class="c"><span class="muted">n/a</span></td><td class="c">1</td><td class="c muted">0</td><td class="c">1</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000022063010" target="_blank">Pramerica Life</a></td><td><span class="pr p1">P1</span></td><td class="c"><span class="z">0</span></td><td class="c red"><a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000008490562" target="_blank">11</a></td><td class="c"><span class="z">0</span></td><td class="c">1</td><td class="c muted">0</td><td class="c">3</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000033536001" target="_blank">Ageas Federal Life</a></td><td><span class="pr p1">P1</span></td><td class="c"><span class="z">0</span></td><td class="c red"><a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000017742310" target="_blank">5</a></td><td class="c"><span class="z">0</span></td><td class="c">2</td><td class="c red">2</td><td class="c">3</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000019483003" target="_blank">SUD Life</a></td><td><span class="pr p1">P1</span></td><td class="c"><span class="z">0</span></td><td class="c red"><a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000008490535" target="_blank">2</a></td><td class="c"><span class="z">0</span></td><td class="c">1</td><td class="c red">1</td><td class="c">2</td></tr>
+<tr><td>LIC / Other</td><td><span class="pr p1">P1</span></td><td class="c"><span class="muted">n/a</span></td><td class="c "><span class="muted">n/a</span></td><td class="c"><span class="muted">n/a</span></td><td class="c">1</td><td class="c muted">0</td><td class="c">1</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000030687005" target="_blank">ICICI Lombard</a></td><td><span class="pr p2">P2</span></td><td class="c"><span class="z">0</span></td><td class="c red"><a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000017143015" target="_blank">2</a></td><td class="c"><span class="z">0</span></td><td class="c">1</td><td class="c red">2</td><td class="c">1</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000033559035" target="_blank">Tata AIG</a></td><td><span class="pr p2">P2</span></td><td class="c"><span class="muted">n/a</span></td><td class="c "><span class="muted">n/a</span></td><td class="c"><span class="muted">n/a</span></td><td class="c">1</td><td class="c muted">0</td><td class="c">1</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000019683017" target="_blank">ICICI Prudential</a></td><td><span class="pr p2">P2</span></td><td class="c"><span class="muted">n/a</span></td><td class="c "><span class="muted">n/a</span></td><td class="c"><span class="muted">n/a</span></td><td class="c">1</td><td class="c muted">0</td><td class="c">1</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000016686001" target="_blank">HDFC Life</a> <span class="note">no milestone yet</span></td><td><span class="pr p2">—</span></td><td class="c"><span class="z">0</span></td><td class="c"><a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000008490475" target="_blank">1</a></td><td class="c"><span class="z">0</span></td><td class="c">0</td><td class="c red">1</td><td class="c">0</td></tr>
+</tbody></table>
+<div class="legend"><b>Desk IT</b> = Cardiotrack Ethos (platform/API). <b>Desk Ops</b> = insurer medical operations (Insurance Customer Support + WhatsApp Group + Service Provider Network). <b>Desk Client</b> = Cardiotrack Client Support (individual clients, not linked to insurer accounts, so 0). Counts are open + in-progress tickets. n/a = no Desk account matched (Tata AIA, Policy Bazaar and prospects). Numbers link into Zoho Desk; insurer names open the Zoho CRM account.</div>
+
+<div class="stitle">Detail &middot; P0 and P1 insurers</div>
+<div class="icard"><div class="ihead"><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000014075025" target="_blank">Aditya Birla Sun Life</a> <span class="pr p0">P0</span> <span class="dchip">Desk open &middot; IT <a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000008490454" target="_blank">1</a> &middot; Ops <a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000008490454" target="_blank">39</a> &middot; Client <a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000008490454" target="_blank">0</a></span></div>
+<div class="mrow"><div class="mline"><span class="mc">M8</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684013" target="_blank" class="mt">Stabilize service to scale</a> <span class="prod">PPMC</span> <span class="stg">Active</span> <span class="sig crit">Blocked on our side</span></div>
+<div class="sub"><span class="lbl">Issues</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000072527011" target="_blank">ABSLI Agreement</a> <span class="badge progress">In Progress</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000072527001" target="_blank">HDFC Channel welcome SMS confirmation</a> <span class="badge progress">In Progress</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000071871027" target="_blank">New Report Splitting utility test codes</a> <span class="badge progress">In Progress</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000071871020" target="_blank">DC Location Issue</a> <span class="badge progress">In Progress</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000071871013" target="_blank">MIS Issue</a> <span class="badge progress">In Progress</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000071770001" target="_blank">DC in MSP list mapped by city not pincode</a> <span class="badge new">New</span></li>
+</ul></div>
+<div class="sub"><span class="lbl">Tasks</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705009" target="_blank">Vital photos (H/W/BP) to 100%</a> <span class="due">10 Aug</span> <span class="tp high">High</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705010" target="_blank">Control grievances; agree reduction plan</a> <span class="due">10 Aug</span> <span class="tp high">High</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705011" target="_blank">Empanel centres per Ashish list</a> <span class="due">20 Aug</span> <span class="tp normal">Normal</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705012" target="_blank">Closed reports via SFTP API (dev)</a> <span class="due">31 Aug</span> <span class="tp normal">Normal</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705013" target="_blank">Registration + Status Update API (dev)</a> <span class="due">31 Aug</span> <span class="tp normal">Normal</span></li>
+</ul></div></div>
+</div>
+<div class="icard"><div class="ihead"><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000019312002" target="_blank">Bajaj Life</a> <span class="pr p0">P0</span> <span class="dchip">Desk open &middot; IT <a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000065918137" target="_blank">1</a> &middot; Ops <a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000065918137" target="_blank">17</a> &middot; Client <a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000065918137" target="_blank">0</a></span></div>
+<div class="mrow"><div class="mline"><span class="mc">M2</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090678007" target="_blank" class="mt">Reallocation 30→56/day (+₹5L)</a> <span class="prod">PPMC</span> <span class="stg">Active</span> <span class="sig crit">Blocked on our side</span></div>
+<div class="sub"><span class="lbl">Issues</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000069084001" target="_blank">Height & weight missed in MER, QC passed</a> <span class="badge escalated">Escalated</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000068925013" target="_blank">BP reading missing in the MER</a> <span class="badge escalated">Escalated</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000068925001" target="_blank">Photo mismatch in medical report submitted</a> <span class="badge new">New</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000068500016" target="_blank">Delay responding to insurer queries (email/WhatsApp)</a> <span class="badge new">New</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000069440178" target="_blank">Billing: test names must match the agreement</a> <span class="badge new">New</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000069440164" target="_blank">Billing: intimation & order-closed dates accuracy</a> <span class="badge new">New</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000069440157" target="_blank">Billing: dates in DD/MM/YYYY format</a> <span class="badge new">New</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000069440146" target="_blank">Billing: share intimation emails for manual reg.</a> <span class="badge new">New</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000069086024" target="_blank">Tele-caller performance in BALIC dashboard</a> <span class="badge new">New</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000069086008" target="_blank">Apr–Aug billing data reconciliation</a> <span class="badge new">New</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000069795001" target="_blank">M529 (urine cotinine) case issue</a> <span class="badge new">New</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000069526001" target="_blank">Manual/API case registration dispose status</a> <span class="badge new">New</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000068912027" target="_blank">Customer preferred appt date/time in MIS</a> <span class="badge new">New</span></li>
+</ul></div>
+<div class="sub"><span class="lbl">Tasks</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090707005" target="_blank">Close channel reallocation 30→56/day</a> <span class="due">31 Jul</span> <span class="tp highest">Highest</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705008" target="_blank">Lift T-day report linking toward 100%</a> <span class="due">15 Aug</span> <span class="tp normal">Normal</span></li>
+</ul></div></div>
+<div class="mrow"><div class="mline"><span class="mc">M3</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090678008" target="_blank" class="mt">ECG AI agreement signed</a> <span class="prod">AI ECG</span> <span class="stg">Agreement</span> <span class="sig warn">At risk</span></div>
+<div class="sub"><span class="lbl">Tasks</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090707006" target="_blank">Sign ECG AI agreement + first billing</a> <span class="due">31 Jul</span> <span class="tp highest">Highest</span></li>
+</ul></div></div>
+</div>
+<div class="icard"><div class="ihead"><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000021038001" target="_blank">Canara HSBC Life</a> <span class="pr p0">P0</span> <span class="dchip">Desk open &middot; IT <a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000008490559" target="_blank">0</a> &middot; Ops <a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000008490559" target="_blank">15</a> &middot; Client <a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000008490559" target="_blank">0</a></span></div>
+<div class="mrow"><div class="mline"><span class="mc">M1</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090678006" target="_blank" class="mt">Ramp to ₹5.5L/mo</a> <span class="prod">PPMC</span> <span class="stg">Restart</span> <span class="sig build">Building</span></div>
+<div class="sub"><span class="lbl">Issues</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000069441001" target="_blank">DC panelling for Tier 2 & 3 locations</a> <span class="badge new">New</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000073122001" target="_blank">Weekly medical operations review agenda</a> <span class="badge new">New</span></li>
+</ul></div>
+<div class="sub"><span class="lbl">Tasks</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090707004" target="_blank">Confirm unblock live + ramp to ₹5.5L/mo</a> <span class="due">31 Jul</span> <span class="tp highest">Highest</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705004" target="_blank">Populate daily MIS blank fields + dispositions</a> <span class="due">05 Aug</span> <span class="tp high">High</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705005" target="_blank">Fix DC allocation delay (manual/on-hold)</a> <span class="due">05 Aug</span> <span class="tp high">High</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705006" target="_blank">Share billing provisional data by 23rd</a> <span class="due">23 Aug</span> <span class="tp low">Low</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705007" target="_blank">Case closure API (development)</a> <span class="due">15 Aug</span> <span class="tp normal">Normal</span></li>
+</ul></div></div>
+</div>
+<div class="icard"><div class="ihead"><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000014075169" target="_blank">Tata AIA Life</a> <span class="pr p0">P0</span> </div>
+<div class="mrow"><div class="mline"><span class="mc">M5</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090678010" target="_blank" class="mt">200 PPMC pilot → monthly</a> <span class="prod">PPMC</span> <span class="stg">Pilot</span> <span class="sig build">Building</span></div>
+<div class="sub"><span class="lbl">Tasks</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090707008" target="_blank">Execute 200 PPMC pilot → ₹2L→₹5L</a> <span class="due">31 Jul</span> <span class="tp high">High</span></li>
+</ul></div></div>
+<div class="mrow"><div class="mline"><span class="mc">M13</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684018" target="_blank" class="mt">ECG AI pilot → commercial</a> <span class="prod">AI ECG</span> <span class="stg">Pilot</span> <span class="sig build">Building</span></div>
+<div class="sub"><span class="lbl">Tasks</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705022" target="_blank">Run ECG AI pilot → commercial</a> <span class="due">15 Aug</span> <span class="tp high">High</span></li>
+</ul></div></div>
+<div class="mrow"><div class="mline"><span class="mc">M14</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684019" target="_blank" class="mt">Complete VMER testing</a> <span class="prod">Dr VMER</span> <span class="stg">In discussion</span> <span class="sig grey">Qualifying</span></div>
+<div class="sub"><span class="lbl">Tasks</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705023" target="_blank">Complete VMER testing (dev)</a> <span class="due">31 Aug</span> <span class="tp normal">Normal</span></li>
+</ul></div></div>
+</div>
+<div class="icard"><div class="ihead"><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000018768008" target="_blank">Policy Bazaar</a> <span class="pr p0">P0</span> </div>
+<div class="mrow"><div class="mline"><span class="mc">M6</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090678011" target="_blank" class="mt">200 pilot → ₹5L/mo</a> <span class="prod">PPMC</span> <span class="stg">Pilot</span> <span class="sig build">Building</span></div>
+<div class="sub"><span class="lbl">Tasks</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090707009" target="_blank">Execute 200 pilot → ₹5L/mo by Oct</a> <span class="due">31 Jul</span> <span class="tp high">High</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705024" target="_blank">Incoming (registration) API (dev)</a> <span class="due">31 Aug</span> <span class="tp normal">Normal</span></li>
+</ul></div></div>
+</div>
+<div class="icard"><div class="ihead"><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000020775001" target="_blank">Thyrocare</a> <span class="pr p0">P0</span> </div>
+<div class="mrow"><div class="mline"><span class="mc">M7</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090678012" target="_blank" class="mt">Device delivery + instalment 2</a> <span class="prod">AI ECG</span> <span class="stg">Delivery 30-Jul</span> <span class="sig good">On track</span></div>
+<div class="sub"><span class="lbl">Tasks</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090707010" target="_blank">Receive device delivery + collect instalment 2</a> <span class="due">31 Jul</span> <span class="tp high">High</span></li>
+</ul></div></div>
+</div>
+<div class="icard"><div class="ihead"><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000022063010" target="_blank">Pramerica Life</a> <span class="pr p1">P1</span> <span class="dchip">Desk open &middot; IT <a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000008490562" target="_blank">0</a> &middot; Ops <a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000008490562" target="_blank">11</a> &middot; Client <a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000008490562" target="_blank">0</a></span></div>
+<div class="mrow"><div class="mline"><span class="mc">M10</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684015" target="_blank" class="mt">Hold +₹2L, fix DC allocation</a> <span class="prod">PPMC</span> <span class="stg">Active</span> <span class="sig good">On track</span></div>
+<div class="sub"><span class="lbl">Tasks</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705019" target="_blank">Hold +₹2L growth (115/285)</a> <span class="due">31 Jul</span> <span class="tp high">High</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705020" target="_blank">Fix DC allocation delay on manual cases</a> <span class="due">05 Aug</span> <span class="tp high">High</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705021" target="_blank">Daily MIS changes (dev)</a> <span class="due">15 Aug</span> <span class="tp normal">Normal</span></li>
+</ul></div></div>
+</div>
+<div class="icard"><div class="ihead"><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000033536001" target="_blank">Ageas Federal Life</a> <span class="pr p1">P1</span> <span class="dchip">Desk open &middot; IT <a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000017742310" target="_blank">0</a> &middot; Ops <a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000017742310" target="_blank">5</a> &middot; Client <a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000017742310" target="_blank">0</a></span></div>
+<div class="mrow"><div class="mline"><span class="mc">M11</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684016" target="_blank" class="mt">Non-inhouse enablement (+₹1L)</a> <span class="prod">PPMC</span> <span class="stg">Active</span> <span class="sig build">Building</span></div>
+<div class="sub"><span class="lbl">Tasks</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705016" target="_blank">Non-inhouse channel enablement (+₹1L)</a> <span class="due">31 Jul</span> <span class="tp high">High</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705018" target="_blank">Incoming (registration) API (dev)</a> <span class="due">31 Aug</span> <span class="tp normal">Normal</span></li>
+</ul></div></div>
+<div class="mrow"><div class="mline"><span class="mc">M12</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684017" target="_blank" class="mt">MER/Path digitisation (AI MER wedge)</a> <span class="prod">AI MER</span> <span class="stg">In discussion</span> <span class="sig build">Building</span></div>
+<div class="sub"><span class="lbl">Issues</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000069704001" target="_blank">Addendum for the digitising piece</a> <span class="badge progress">In Progress</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000068404025" target="_blank">Digitise & share MER values with Ageas</a> <span class="badge progress">In Progress</span></li>
+</ul></div>
+<div class="sub"><span class="lbl">Tasks</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705017" target="_blank">MER + Path digitisation (dev)</a> <span class="due">31 Aug</span> <span class="tp high">High</span></li>
+</ul></div></div>
+</div>
+<div class="icard"><div class="ihead"><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000019483003" target="_blank">SUD Life</a> <span class="pr p1">P1</span> <span class="dchip">Desk open &middot; IT <a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000008490535" target="_blank">0</a> &middot; Ops <a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000008490535" target="_blank">2</a> &middot; Client <a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000008490535" target="_blank">0</a></span></div>
+<div class="mrow"><div class="mline"><span class="mc">M9</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684014" target="_blank" class="mt">5× via realignment</a> <span class="prod">PPMC</span> <span class="stg">Active</span> <span class="sig build">Building</span></div>
+<div class="sub"><span class="lbl">Issues</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000071247001" target="_blank">Billing incorrect for SUD Life</a> <span class="badge new">New</span></li>
+</ul></div>
+<div class="sub"><span class="lbl">Tasks</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705014" target="_blank">Account realignment via George/Preeti (5×)</a> <span class="due">31 Jul</span> <span class="tp high">High</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705015" target="_blank">Registration + Status Update API (dev)</a> <span class="due">31 Aug</span> <span class="tp normal">Normal</span></li>
+</ul></div></div>
+</div>
+<div class="icard"><div class="ihead">LIC / Other <span class="pr p1">P1</span> </div>
+<div class="mrow"><div class="mline"><span class="mc">M15</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684020" target="_blank" class="mt">Open channel via MD India</a> <span class="prod">PPMC</span> <span class="stg">Prospect</span> <span class="sig grey">Qualifying</span></div>
+<div class="sub"><span class="lbl">Tasks</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705027" target="_blank">Open LIC channel via MD India</a> <span class="due">31 Aug</span> <span class="tp high">High</span></li>
+</ul></div></div>
+</div>
+<div class="stitle">Detail &middot; P2 and programme</div>
+<div class="icard"><div class="ihead"><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000030687005" target="_blank">ICICI Lombard</a> <span class="pr p2">P2</span> <span class="dchip">Desk open &middot; IT <a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000017143015" target="_blank">0</a> &middot; Ops <a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000017143015" target="_blank">2</a> &middot; Client <a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000017143015" target="_blank">0</a></span></div>
+<div class="mrow"><div class="mline"><span class="mc">M4</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090678009" target="_blank" class="mt">Orderly wind-down + collect</a> <span class="prod">PPMC</span> <span class="stg">Winding down</span> <span class="sig grey">Qualifying</span></div>
+<div class="sub"><span class="lbl">Issues</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000071649008" target="_blank">Understand Kesva's pain point</a> <span class="badge new">New</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000069868001" target="_blank">Access to digitized AHC reports</a> <span class="badge new">New</span></li>
+</ul></div>
+<div class="sub"><span class="lbl">Tasks</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090707007" target="_blank">Orderly wind-down + protect collections</a> <span class="due">30 Sep</span> <span class="tp high">High</span></li>
+</ul></div></div>
+</div>
+<div class="icard"><div class="ihead"><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000033559035" target="_blank">Tata AIG</a> <span class="pr p2">P2</span> </div>
+<div class="mrow"><div class="mline"><span class="mc">M16</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684021" target="_blank" class="mt">Reactivation (peak 632/mo)</a> <span class="prod">PPMC</span> <span class="stg">Prospect</span> <span class="sig grey">Qualifying</span></div>
+<div class="sub"><span class="lbl">Tasks</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705028" target="_blank">Schedule reactivation meeting</a> <span class="due">31 Aug</span> <span class="tp normal">Normal</span></li>
+</ul></div></div>
+</div>
+<div class="icard"><div class="ihead"><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000019683017" target="_blank">ICICI Prudential</a> <span class="pr p2">P2</span> </div>
+<div class="mrow"><div class="mline"><span class="mc">M17</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684022" target="_blank" class="mt">Strategy deck → first meeting</a> <span class="prod">PPMC</span> <span class="stg">Prospect</span> <span class="sig grey">Qualifying</span></div>
+<div class="sub"><span class="lbl">Tasks</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705029" target="_blank">Strategy deck → first meeting</a> <span class="due">15 Sep</span> <span class="tp normal">Normal</span></li>
+</ul></div></div>
+</div>
+<div class="icard"><div class="ihead">Programme lines <span class="pr p0">cross-account</span></div>
+<div class="mrow"><div class="mline"><span class="mc">M18</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684023" target="_blank" class="mt">Launch Sep, first 2 insurers</a> <span class="prod">AI MER</span> <span class="stg">Planned Sep</span> <span class="sig build">Building</span></div>
+<div class="sub"><span class="lbl">Tasks</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705025" target="_blank">Identify first 2 insurers for AI MER</a> <span class="due">31 Aug</span> <span class="tp high">High</span></li>
+</ul></div></div>
+<div class="mrow"><div class="mline"><span class="mc">M19</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684024" target="_blank" class="mt">Launch Oct</a> <span class="prod">Dr VMER</span> <span class="stg">Planned Oct</span> <span class="sig grey">Qualifying</span></div>
+<div class="sub"><span class="lbl">Tasks</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705026" target="_blank">Launch Doctor VMER Oct-26</a> <span class="due">30 Sep</span> <span class="tp normal">Normal</span></li>
+</ul></div></div>
+<div class="mrow"><div class="mline"><span class="mc">M20</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684025" target="_blank" class="mt">July ₹99.1L + reduce ₹65.5L</a> <span class="prod">All lines</span> <span class="stg">In progress</span> <span class="sig warn">At risk</span></div>
+<div class="sub"><span class="lbl">Tasks</span><ul>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705030" target="_blank">Execute July collection plan ₹99.1L</a> <span class="due">31 Jul</span> <span class="tp highest">Highest</span></li>
+<li><a href="https://crm.zoho.com/crm/org55302521/tab/Activities/1575152000090705031" target="_blank">Reduce outstanding receivables ₹65.5L</a> <span class="due">31 Aug</span> <span class="tp high">High</span></li>
+</ul></div></div>
+</div>
+<div class="foot">Each milestone links to its Deal, each issue to its Case, each task to its Activity in Zoho CRM; Desk figures link to the account in Zoho Desk. Open CRM issues are the team's logged Cases (a hygiene pass on stale ones is queued). The weekday 8:30 IST engine works this same data, and rebuilds and republishes this page on schedule.</div>
+</div></body></html>
