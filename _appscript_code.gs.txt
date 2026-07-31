@@ -58,6 +58,72 @@ var MS = {
   M20:{title:'July ₹99.1L + reduce ₹65.5L', dealId:'1575152000090684025', ins:'prog', prod:'All lines', stage:'In progress', sig:'warn'}
 };
 
+// ---------- PIPELINE (curated growth pipeline; updated via chat) ----------
+// service keys: h=Home screening, d=DC visit, e=AI ECG, m=AI MER, v=Doctor VMER, c=DC compliance, a=Data analytics
+// status values: Live | Pilot | Prop (proposed/in discussion); blank = not offered yet
+var PIPELINE = {
+  note: 'Service status is a first estimate from current engagements — confirm per account. Direct emails were not publicly available; verify via LinkedIn/company before outreach.',
+  india: [
+    {co:'HDFC Life', ty:'Life', rel:'Customer', s:{h:'Live'}, cn:'Shraddha Patkar', ct:'Chief Manager, Underwriting'},
+    {co:'Canara HSBC Life', ty:'Life', rel:'Customer', s:{h:'Live'}, cn:'Sachin Dutta', ct:'Chief Operating Officer'},
+    {co:'Bajaj Allianz Life', ty:'Life', rel:'Customer', s:{h:'Live', e:'Prop'}, cn:'Pawan Mahajan', ct:'Head, Underwriting & New Business'},
+    {co:'Aditya Birla Sun Life', ty:'Life', rel:'Customer', s:{h:'Live'}, cn:'Jatin Varshney', ct:'Head, New Business Operations'},
+    {co:'Tata AIA Life', ty:'Life', rel:'Customer', s:{h:'Pilot', e:'Pilot', v:'Prop'}, cn:'Sanjay Arora', ct:'Chief of Operations'},
+    {co:'SUD Life', ty:'Life', rel:'Customer', s:{h:'Live'}, cn:'Ganesh Muruga', ct:'Chief Operating Officer'},
+    {co:'Ageas Federal Life', ty:'Life', rel:'Customer', s:{h:'Live', m:'Prop'}, cn:'Raju Seetharaman', ct:'Chief Risk Officer'},
+    {co:'Pramerica Life', ty:'Life', rel:'Customer', s:{h:'Live'}, cn:'Karthik Chakrapani', ct:'Chief Business Officer'},
+    {co:'ICICI Lombard', ty:'General', rel:'Customer', s:{h:'Live'}, cn:'Girish Nayak', ct:'Chief, Technology & Health'},
+    {co:'ICICI Prudential Life', ty:'Life', rel:'Prospect', s:{}, cn:'Anand Desai', ct:'Chief Risk Officer'},
+    {co:'Tata AIG General', ty:'General', rel:'Prospect', s:{}, cn:'Dr Jeetendra Agrawal', ct:'Deputy VP, Health Claims'},
+    {co:'LIC', ty:'Life', rel:'Prospect', s:{}, cn:'', ct:''},
+    {co:'SBI Life', ty:'Life', rel:'Prospect', s:{}, cn:'Abhijit Gulanikar', ct:'President, Operations & IT'},
+    {co:'Axis Max Life', ty:'Life', rel:'Prospect', s:{}, cn:'Manu Lavanya', ct:'Director & Chief Operations Officer'},
+    {co:'Kotak Mahindra Life', ty:'Life', rel:'Prospect', s:{}, cn:'Biswajit Sarkar', ct:'SVP & Head, Underwriting'},
+    {co:'PNB MetLife', ty:'Life', rel:'Prospect', s:{}, cn:'Mahendra Munot', ct:'Chief Operating Officer'},
+    {co:'IndiaFirst Life', ty:'Life', rel:'Prospect', s:{}, cn:'Amrish Maheshwari', ct:'Chief Risk Officer'},
+    {co:'IndusInd Nippon Life', ty:'Life', rel:'Prospect', s:{}, cn:'Sujit Sankhe', ct:'Head, Underwriting'},
+    {co:'Bandhan Life', ty:'Life', rel:'Prospect', s:{}, cn:'', ct:''},
+    {co:'Aviva India', ty:'Life', rel:'Prospect', s:{}, cn:'Gaurav Banka', ct:'Chief Risk Officer'},
+    {co:'Shriram Life', ty:'Life', rel:'Prospect', s:{}, cn:'Atul Sharma', ct:'Chief Operating Officer'},
+    {co:'Edelweiss Life', ty:'Life', rel:'Prospect', s:{}, cn:'Subhrajit Mukhopadhyay', ct:'Deputy CEO & Executive Director'},
+    {co:'Bharti AXA Life', ty:'Life', rel:'Prospect', s:{}, cn:'Pankaj Gupta', ct:'Chief Operating Officer'},
+    {co:'Generali Central Life', ty:'Life', rel:'Prospect', s:{}, cn:'', ct:''},
+    {co:'Acko Life', ty:'Life', rel:'Prospect', s:{}, cn:'Dr. Nitin Kumar Gupta', ct:'Managing Director & CEO'},
+    {co:'CreditAccess Life', ty:'Life', rel:'Prospect', s:{}, cn:'Uday Shanker', ct:'Chief Operating Officer'},
+    {co:'Star Health', ty:'Health', rel:'Prospect', s:{}, cn:'Dr. Praveen Kanth K', ct:'Head, Medical Underwriting'},
+    {co:'Care Health (Religare)', ty:'Health', rel:'Prospect', s:{}, cn:'Manish Dodeja', ct:'Whole-Time Director'},
+    {co:'Niva Bupa', ty:'Health', rel:'Prospect', s:{}, cn:'Dr. Bhabatosh Mishra', ct:'Director & Chief Operating Officer'},
+    {co:'ManipalCigna', ty:'Health', rel:'Prospect', s:{}, cn:'Ashish Yadav', ct:'Chief Operating Officer'},
+    {co:'Aditya Birla Health', ty:'Health', rel:'Prospect', s:{}, cn:'Saif Gondekar', ct:'Chief Operations Officer'},
+    {co:'Narayana Health Insurance', ty:'Health', rel:'Prospect', s:{}, cn:'Ravi Vishwanath', ct:'Chief Executive Officer'},
+    {co:'Galaxy Health', ty:'Health', rel:'Prospect', s:{}, cn:'R Margabandhu', ct:'Chief Underwriting Officer'},
+    {co:'New India Assurance', ty:'General', rel:'Prospect', s:{}, cn:'S. Dinakaran', ct:'Chief Underwriting Officer'},
+    {co:'HDFC Ergo', ty:'General', rel:'Prospect', s:{}, cn:'Parthanil Ghosh', ct:'MD & CEO'},
+    {co:'Bajaj Allianz General', ty:'General', rel:'Prospect', s:{}, cn:'Bhaskar Nerurkar', ct:'Head, Health Administration Team'},
+    {co:'Reliance General', ty:'General', rel:'Prospect', s:{}, cn:'Harshada Sawle', ct:'Segment Head, Health Underwriting'},
+    {co:'SBI General', ty:'General', rel:'Prospect', s:{}, cn:'Udayan Joshi', ct:'Chief Operating Officer'},
+    {co:'Acko General', ty:'General', rel:'Prospect', s:{}, cn:'Animesh Das', ct:'CEO, Acko General Insurance'},
+    {co:'Go Digit', ty:'General', rel:'Prospect', s:{}, cn:'', ct:''},
+    {co:'Zuno General', ty:'General', rel:'Prospect', s:{}, cn:'', ct:''},
+    {co:'Cholamandalam MS', ty:'General', rel:'Prospect', s:{}, cn:'', ct:''},
+    {co:'National Insurance', ty:'General', rel:'Prospect', s:{}, cn:'', ct:''},
+    {co:'Oriental Insurance', ty:'General', rel:'Prospect', s:{}, cn:'', ct:''},
+    {co:'United India', ty:'General', rel:'Prospect', s:{}, cn:'', ct:''}
+  ],
+  intl: [
+    {mkt:'GCC / Middle East', tgt:'Sukoon (ex-Oman Ins.), ADNIC, NextCare & Neuron (TPAs), Bupa Arabia, Tawuniya', fit:'AI ECG, Doctor VMER, AI MER, Analytics', why:'Insurers already removing physical medicals via AI; mandatory health cover; large expat screening volume. Warmest market.'},
+    {mkt:'Southeast Asia', tgt:'Prudential, AIA, Manulife, FWD, Great Eastern; Sun Life & Pioneer (PH)', fit:'AI ECG, Doctor VMER, Analytics', why:'Pan-Asian insurers run one digital-underwriting program across 5+ countries; archipelago reach suits remote VMER.'},
+    {mkt:'Africa', tgt:'Discovery, Old Mutual, Sanlam (SA); Leadway, AXA Mansard (NG); Britam, Jubilee (KE)', fit:'Doctor VMER, AI ECG, AI MER, Analytics', why:'Cardiologist/clinic scarcity makes phone AI ECG + VMER a leapfrog capability, not just cost saving.'},
+    {mkt:'UK', tgt:'Vitality, Legal & General, Aviva, Zurich UK, Royal London', fit:'AI ECG, Analytics, AI MER', why:'Mature tele-underwriting; want faster medical evidence for accelerated underwriting. A UK reference lifts credibility for GCC/Asia.'}
+  ],
+  reins: [
+    {n:'Munich Re', note:'ALLFINANZ / next-gen AI underwriting platform licensed to insurers worldwide; embed AI ECG as a data source.'},
+    {n:'Swiss Re', note:'Underwriting Ease + Magnum rules engine; plug AI ECG / MER into their underwriting rules.'},
+    {n:'RGA', note:'Aggressive insurtech partnerships (e.g. DigitalOwl for medical-record AI); partner-of-partners route.'},
+    {n:'Hannover Re', note:'hr | ReFlex automated underwriting licensed to many insurers; another multiplier channel.'}
+  ]
+};
+
 // ---------- OAUTH ----------
 function getAccessToken_(){
   var p = props_();
@@ -183,7 +249,7 @@ function getPayload(){
   return JSON.stringify({
     updated: Utilities.formatDate(new Date(), 'Asia/Kolkata', "EEE dd MMM yyyy, HH:mm 'IST'"),
     INS:INS, MS:MS, desk:desk, casesByMs:casesByMs, tasksByMs:tasksByMs,
-    crmOrg:'org55302521'
+    PIPELINE:PIPELINE, crmOrg:'org55302521'
   });
 }
 
