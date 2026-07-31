@@ -1,0 +1,198 @@
+/**
+ * CT Insurer Command Page — live Apps Script web app.
+ * Fetches Zoho CRM (Cases, Tasks) + Zoho Desk (open ticket counts) live and renders the dashboard.
+ * Secrets live in Script Properties: CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN, ZOHO_DC (com/in), DESK_ORG.
+ * You paste those in Project Settings; this code never hard-codes them.
+ */
+
+// ---------- CONFIG ----------
+function props_(){ return PropertiesService.getScriptProperties(); }
+function dc_(){ return (props_().getProperty('ZOHO_DC') || 'com').trim(); }
+function deskOrg_(){ return (props_().getProperty('DESK_ORG') || '579849134').trim(); }
+function crmBase_(){ return 'https://www.zohoapis.' + dc_() + '/crm/v3'; }
+function deskBase_(){ return 'https://desk.zoho.' + dc_() + '/api/v1'; }
+function accountsBase_(){ return 'https://accounts.zoho.' + dc_(); }
+
+// Desk departments
+var DEPT = { it:'130513000008291099', ops1:'130513000008608447', ops2:'130513000008657325' };
+
+// Insurers: key -> {name, crmId, deskName (search term, null=no Desk), pr}
+var INS = {
+  bajaj:{name:'Bajaj Life', crmId:'1575152000019312002', desk:'Bajaj Life', deskId:'130513000065918137', pr:'P0'},
+  absli:{name:'Aditya Birla Sun Life', crmId:'1575152000014075025', desk:'Aditya Birla Sun', deskId:'130513000008490454', pr:'P0'},
+  canara:{name:'Canara HSBC Life', crmId:'1575152000021038001', desk:'Canara HSBC', deskId:'130513000008490559', pr:'P0'},
+  tata:{name:'Tata AIA Life', crmId:'1575152000014075169', desk:null, deskId:null, pr:'P0'},
+  pb:{name:'Policy Bazaar', crmId:'1575152000018768008', desk:null, deskId:null, pr:'P0'},
+  thyro:{name:'Thyrocare', crmId:'1575152000020775001', desk:null, deskId:null, pr:'P0'},
+  sud:{name:'SUD Life', crmId:'1575152000019483003', desk:'Star Union', deskId:'130513000008490535', pr:'P1'},
+  pram:{name:'Pramerica Life', crmId:'1575152000022063010', desk:'Pramerica', deskId:'130513000008490562', pr:'P1'},
+  ageas:{name:'Ageas Federal Life', crmId:'1575152000033536001', desk:'Ageas', deskId:'130513000017742310', pr:'P1'},
+  lic:{name:'LIC / Other', crmId:null, desk:null, deskId:null, pr:'P1'},
+  icici:{name:'ICICI Lombard', crmId:'1575152000030687005', desk:'ICICI Lombard', deskId:'130513000017143015', pr:'P2'},
+  tataaig:{name:'Tata AIG', crmId:'1575152000033559035', desk:null, deskId:null, pr:'P2'},
+  icicipru:{name:'ICICI Prudential', crmId:'1575152000019683017', desk:null, deskId:null, pr:'P2'},
+  hdfc:{name:'HDFC Life', crmId:'1575152000016686001', desk:'HDFC Life', deskId:'130513000008490475', pr:'P2'}
+};
+
+// Milestones: code -> {title, dealId, ins, prod, stage, sig}
+var MS = {
+  M1:{title:'Ramp to ₹5.5L/mo', dealId:'1575152000090678006', ins:'canara', prod:'PPMC', stage:'Restart', sig:'build'},
+  M2:{title:'Reallocation 30→56/day (+₹5L)', dealId:'1575152000090678007', ins:'bajaj', prod:'PPMC', stage:'Active', sig:'build'},
+  M3:{title:'ECG AI agreement signed', dealId:'1575152000090678008', ins:'bajaj', prod:'AI ECG', stage:'Agreement', sig:'warn'},
+  M4:{title:'Orderly wind-down + collect', dealId:'1575152000090678009', ins:'icici', prod:'PPMC', stage:'Winding down', sig:'grey'},
+  M5:{title:'200 PPMC pilot → monthly', dealId:'1575152000090678010', ins:'tata', prod:'PPMC', stage:'Pilot', sig:'build'},
+  M6:{title:'200 pilot → ₹5L/mo', dealId:'1575152000090678011', ins:'pb', prod:'PPMC', stage:'Pilot', sig:'build'},
+  M7:{title:'Device delivery + instalment 2', dealId:'1575152000090678012', ins:'thyro', prod:'AI ECG', stage:'Delivery', sig:'good'},
+  M8:{title:'Stabilize service to scale', dealId:'1575152000090684013', ins:'absli', prod:'PPMC', stage:'Active', sig:'warn'},
+  M9:{title:'5× via realignment', dealId:'1575152000090684014', ins:'sud', prod:'PPMC', stage:'Active', sig:'build'},
+  M10:{title:'Hold +₹2L, fix DC allocation', dealId:'1575152000090684015', ins:'pram', prod:'PPMC', stage:'Active', sig:'good'},
+  M11:{title:'Non-inhouse enablement (+₹1L)', dealId:'1575152000090684016', ins:'ageas', prod:'PPMC', stage:'Active', sig:'build'},
+  M12:{title:'MER/Path digitisation (AI MER wedge)', dealId:'1575152000090684017', ins:'ageas', prod:'AI MER', stage:'In discussion', sig:'build'},
+  M13:{title:'ECG AI pilot → commercial', dealId:'1575152000090684018', ins:'tata', prod:'AI ECG', stage:'Pilot', sig:'build'},
+  M14:{title:'Complete VMER testing', dealId:'1575152000090684019', ins:'tata', prod:'Dr VMER', stage:'In discussion', sig:'grey'},
+  M15:{title:'Open channel via MD India', dealId:'1575152000090684020', ins:'lic', prod:'PPMC', stage:'Prospect', sig:'grey'},
+  M16:{title:'Reactivation (peak 632/mo)', dealId:'1575152000090684021', ins:'tataaig', prod:'PPMC', stage:'Prospect', sig:'grey'},
+  M17:{title:'Strategy deck → first meeting', dealId:'1575152000090684022', ins:'icicipru', prod:'PPMC', stage:'Prospect', sig:'grey'},
+  M18:{title:'Launch Sep, first 2 insurers', dealId:'1575152000090684023', ins:'prog', prod:'AI MER', stage:'Planned Sep', sig:'build'},
+  M19:{title:'Launch Oct', dealId:'1575152000090684024', ins:'prog', prod:'Dr VMER', stage:'Planned Oct', sig:'grey'},
+  M20:{title:'July ₹99.1L + reduce ₹65.5L', dealId:'1575152000090684025', ins:'prog', prod:'All lines', stage:'In progress', sig:'warn'}
+};
+
+// ---------- OAUTH ----------
+function getAccessToken_(){
+  var p = props_();
+  var url = accountsBase_() + '/oauth/v2/token';
+  var payload = {
+    refresh_token: p.getProperty('REFRESH_TOKEN'),
+    client_id: p.getProperty('CLIENT_ID'),
+    client_secret: p.getProperty('CLIENT_SECRET'),
+    grant_type: 'refresh_token'
+  };
+  var res = UrlFetchApp.fetch(url, {method:'post', payload:payload, muteHttpExceptions:true});
+  var j = JSON.parse(res.getContentText());
+  if(!j.access_token) throw new Error('Token refresh failed: ' + res.getContentText());
+  return j.access_token;
+}
+
+/** ONE-TIME setup: put CLIENT_ID, CLIENT_SECRET, GRANT_CODE, ZOHO_DC in Script Properties, then run this once. */
+function exchangeGrantForRefresh(){
+  var p = props_();
+  var url = accountsBase_() + '/oauth/v2/token';
+  var payload = {
+    grant_type:'authorization_code',
+    client_id:p.getProperty('CLIENT_ID'),
+    client_secret:p.getProperty('CLIENT_SECRET'),
+    code:p.getProperty('GRANT_CODE')
+  };
+  var res = UrlFetchApp.fetch(url, {method:'post', payload:payload, muteHttpExceptions:true});
+  var j = JSON.parse(res.getContentText());
+  if(j.refresh_token){
+    p.setProperty('REFRESH_TOKEN', j.refresh_token);
+    p.deleteProperty('GRANT_CODE');
+    return 'OK: refresh token stored. You can delete GRANT_CODE.';
+  }
+  throw new Error('Exchange failed: ' + res.getContentText());
+}
+
+// ---------- CRM ----------
+function coql_(token, query){
+  var res = UrlFetchApp.fetch(crmBase_() + '/coql', {
+    method:'post',
+    contentType:'application/json',
+    headers:{Authorization:'Zoho-oauthtoken ' + token},
+    payload: JSON.stringify({select_query: query}),
+    muteHttpExceptions:true
+  });
+  if(res.getResponseCode()===204) return [];
+  var j = JSON.parse(res.getContentText());
+  return (j && j.data) ? j.data : [];
+}
+
+function fetchOpenCases_(token){
+  return coql_(token, "select id, Subject, Status, Account_Name, Deal_Name from Cases where Status != 'Closed' limit 200");
+}
+function fetchMilestoneTasks_(token){
+  return coql_(token, "select id, Subject, Status, Due_Date, What_Id from Tasks where Subject like '[M%' limit 200");
+}
+
+// ---------- DESK ----------
+function deskRequests_(token){
+  var reqs = [];
+  Object.keys(INS).forEach(function(k){
+    var d = INS[k].desk; if(!d) return;
+    [['it',DEPT.it],['ops1',DEPT.ops1],['ops2',DEPT.ops2]].forEach(function(pair){
+      var url = deskBase_() + '/tickets/search?departmentId=' + pair[1]
+              + '&status=' + encodeURIComponent('Open,In Progress')
+              + '&accountName=' + encodeURIComponent(d) + '&limit=99&from=0';
+      reqs.push({key:k, bucket:pair[0], request:{url:url, method:'get',
+        headers:{Authorization:'Zoho-oauthtoken ' + token, orgId: deskOrg_()}, muteHttpExceptions:true}});
+    });
+  });
+  return reqs;
+}
+function fetchDesk_(token){
+  var reqs = deskRequests_(token);
+  var responses = UrlFetchApp.fetchAll(reqs.map(function(r){return r.request;}));
+  var out = {}; // key -> {it,ops,client}
+  Object.keys(INS).forEach(function(k){ if(INS[k].desk) out[k] = {it:0, ops:0, client:0}; });
+  reqs.forEach(function(r, i){
+    var body = responses[i].getContentText();
+    var n = 0;
+    try { var j = JSON.parse(body); n = (typeof j.count === 'number') ? j.count : ((j.data||[]).length); } catch(e){ n = 0; }
+    if(r.bucket==='it') out[r.key].it += n; else out[r.key].ops += n;
+  });
+  return out;
+}
+
+// ---------- ASSEMBLE ----------
+function getPayload(){
+  var token = getAccessToken_();
+  var cases = fetchOpenCases_(token);
+  var tasks = fetchMilestoneTasks_(token);
+  var desk = {};
+  try { desk = fetchDesk_(token); } catch(e){ desk = {__error:String(e)}; }
+
+  // dealId -> code, crmAccId -> insKey
+  var dealToCode = {}; Object.keys(MS).forEach(function(c){ dealToCode[MS[c].dealId] = c; });
+  var accToIns = {}; Object.keys(INS).forEach(function(k){ if(INS[k].crmId) accToIns[INS[k].crmId] = k; });
+  // primary milestone per insurer (first MS whose ins==k)
+  var primaryMs = {}; Object.keys(MS).forEach(function(c){ var k=MS[c].ins; if(!primaryMs[k]) primaryMs[k]=c; });
+
+  // Group open cases by milestone code
+  var casesByMs = {};
+  cases.forEach(function(c){
+    var code = null;
+    if(c.Deal_Name && c.Deal_Name.id && dealToCode[c.Deal_Name.id]) code = dealToCode[c.Deal_Name.id];
+    if(!code && c.Account_Name && c.Account_Name.id && accToIns[c.Account_Name.id]) code = primaryMs[accToIns[c.Account_Name.id]];
+    if(!code) code = '_unlinked';
+    (casesByMs[code] = casesByMs[code] || []).push({id:c.id, subject:c.Subject, status:c.Status});
+  });
+
+  // Group OPEN tasks by milestone via What_Id (deal) or subject prefix
+  var tasksByMs = {};
+  tasks.forEach(function(t){
+    var st = (t.Status||'').toLowerCase();
+    if(st==='completed' || st==='closed') return; // only open tasks
+    var code = null;
+    if(t.What_Id && t.What_Id.id && dealToCode[t.What_Id.id]) code = dealToCode[t.What_Id.id];
+    if(!code){ var m = /^\[(M\d+)/.exec(t.Subject||''); if(m) code = m[1]; }
+    if(!code) return;
+    (tasksByMs[code] = tasksByMs[code] || []).push({id:t.id, subject:t.Subject, due:t.Due_Date||'', status:t.Status});
+  });
+
+  return JSON.stringify({
+    updated: Utilities.formatDate(new Date(), 'Asia/Kolkata', "EEE dd MMM yyyy, HH:mm 'IST'"),
+    INS:INS, MS:MS, desk:desk, casesByMs:casesByMs, tasksByMs:tasksByMs,
+    crmOrg:'org55302521'
+  });
+}
+
+function doGet(){
+  var t = HtmlService.createTemplateFromFile('Index');
+  t.payload = getPayload().replace(/</g, '\\u003c'); // safe to inline as a JS object literal
+  return t.evaluate().setTitle('CT Insurer Command Page')
+    .addMetaTag('viewport','width=device-width, initial-scale=1.0');
+}
+
+// Called by the Refresh button (client) to re-pull live and get fresh data.
+function refresh(){ return getPayload(); }

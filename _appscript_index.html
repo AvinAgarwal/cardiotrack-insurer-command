@@ -1,0 +1,160 @@
+<!DOCTYPE html><html><head><base target="_top"><meta charset="utf-8">
+<style>
+:root{--bg:#f5f6f8;--surface:#fff;--ink:#182031;--ink2:#4a5568;--ink3:#8492a6;--line:#e5e9ef;--good:#1e7d4f;--goodb:#e4f4ea;--build:#2b5c9a;--buildb:#e8effb;--warn:#9a6700;--warnb:#fdf3d4;--crit:#b3261e;--critb:#fbe9e7;--grey:#5b6472;--greyb:#eef1f5;--accent:#2751a3;--accentb:#e8eefb;--navy:#0d1b36;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);padding:26px;line-height:1.45}
+.wrap{max-width:1180px;margin:0 auto}
+.hrow{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+h1{font-size:22px;font-weight:700;color:var(--navy)}
+.sub{color:var(--ink2);font-size:13px;margin-top:4px;max-width:820px}
+.updated{display:inline-block;margin-top:8px;font-size:12px;color:var(--ink3)}
+.rbtn{font-size:13px;font-weight:700;color:#fff;background:var(--accent);border:none;border-radius:8px;padding:9px 16px;cursor:pointer;white-space:nowrap}
+.rbtn:hover{background:#1d3f80}.rbtn:disabled{opacity:.6;cursor:default}
+.stitle{font-size:13px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.05em;margin:24px 0 10px}
+table.sum{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:13px}
+table.sum thead th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3);padding:8px 10px;border-bottom:1px solid var(--line);background:#fafbfc}
+table.sum thead th.c,table.sum td.c{text-align:center}
+table.sum td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+table.sum tr:last-child td{border-bottom:none}
+table.sum td.red{color:var(--crit);font-weight:700}.muted{color:var(--ink3)}.z{color:var(--ink3)}
+.note{font-size:11px;color:var(--ink3)}
+.pr{font-size:10px;font-weight:700;padding:1px 6px;border-radius:5px}
+.pr.p0{background:var(--critb);color:var(--crit)}.pr.p1{background:var(--warnb);color:var(--warn)}.pr.p2{background:var(--greyb);color:var(--grey)}
+.icard{background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:14px 16px;margin-bottom:12px}
+.ihead{font-size:15px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:4px}
+.dchip{font-size:11px;font-weight:600;background:var(--accentb);color:var(--accent);padding:2px 9px;border-radius:999px;margin-left:auto}
+.mrow{border-top:1px solid var(--line);padding:10px 0 6px}
+.mline{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13.5px}
+.mc{font-weight:700;color:var(--ink2);font-size:12px}.mt{font-weight:600}
+.prod{font-size:10.5px;font-weight:600;color:var(--accent);background:var(--accentb);padding:1px 7px;border-radius:5px}
+.stg{font-size:11.5px;color:var(--ink3)}
+.sig{font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;margin-left:auto}
+.sig.build{background:var(--buildb);color:var(--build)}.sig.warn{background:var(--warnb);color:var(--warn)}.sig.crit{background:var(--critb);color:var(--crit)}.sig.good{background:var(--goodb);color:var(--good)}.sig.grey{background:var(--greyb);color:var(--grey)}
+.subr{margin:5px 0 2px 6px;display:flex;gap:8px}
+.subr .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3);min-width:44px;padding-top:3px}
+.subr ul{list-style:none;margin:0;padding:0;flex:1}
+.subr li{font-size:12.5px;padding:2px 0;border-bottom:1px dotted #eef0f3}
+.subr li:last-child{border-bottom:none}
+.badge{font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:4px}
+.badge.escalated{background:var(--critb);color:var(--crit)}.badge.progress{background:var(--accentb);color:var(--accent)}.badge.new{background:var(--buildb);color:var(--build)}
+.due{font-size:11px;color:var(--ink3)}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.foot{margin-top:16px;font-size:12px;color:var(--ink3)}
+.legend{font-size:11.5px;color:var(--ink2);margin-top:6px}
+.spin{display:inline-block;width:13px;height:13px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style></head><body><div class="wrap">
+<div class="hrow">
+  <div>
+    <h1>CT Insurer Command Page</h1>
+    <div class="sub">One page per insurer. Desk shows <b>open tickets only</b>, split into IT (Ethos platform), Ops (insurer medical operations) and Client (individual-client queries). Milestones, issues and tasks come live from CRM. Every row links to its Zoho record.</div>
+    <span class="updated" id="updated"></span>
+  </div>
+  <button class="rbtn" id="rbtn" onclick="doRefresh()">Refresh</button>
+</div>
+<div id="body"></div>
+<div class="foot">Live from Zoho CRM (Cases, Tasks) + Zoho Desk (open tickets, org Cardiotrack). Click <b>Refresh</b> to re-pull the latest. Each milestone links to its Deal, each issue to its Case, each task to its Activity; Desk figures link to the account in Zoho Desk.</div>
+</div>
+
+<script>
+var PAYLOAD = <?!= payload ?>;
+var ORG = (PAYLOAD.crmOrg||'org55302521');
+var SIGTXT={good:'On track',build:'Building',warn:'At risk',crit:'Blocked on our side',grey:'Qualifying'};
+function acc(i){return 'https://crm.zoho.com/crm/'+ORG+'/tab/Accounts/'+i;}
+function deal(i){return 'https://crm.zoho.com/crm/'+ORG+'/tab/Deals/'+i;}
+function kase(i){return 'https://crm.zoho.com/crm/'+ORG+'/tab/Cases/'+i;}
+function task(i){return 'https://crm.zoho.com/crm/'+ORG+'/tab/Activities/'+i;}
+function desk(i){return 'https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/'+i;}
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function msFor(P,k){return Object.keys(P.MS).filter(function(c){return P.MS[c].ins===k;});}
+function nCase(P,codes){var n=0;codes.forEach(function(c){n+=(P.casesByMs[c]||[]).length;});return n;}
+function nTask(P,codes){var n=0;codes.forEach(function(c){n+=(P.tasksByMs[c]||[]).length;});return n;}
+function orderKeys(P){
+  var ord={P0:0,P1:1,P2:2};
+  return Object.keys(P.INS).filter(function(k){return k!=='hdfc';}).sort(function(a,b){
+    var pa=ord[P.INS[a].pr],pb=ord[P.INS[b].pr];
+    if(pa!==pb)return pa-pb;
+    var oa=(P.desk[a]?P.desk[a].ops:-1),ob=(P.desk[b]?P.desk[b].ops:-1);
+    return ob-oa;
+  });
+}
+function dcell(P,k,val){
+  var d=P.INS[k]; if(!d.desk) return '<span class="muted">n/a</span>';
+  if(!val) return '<span class="z">0</span>';
+  return '<a href="'+desk(d.deskId)+'" target="_blank">'+val+'</a>';
+}
+function sumRow(P,k){
+  var d=P.INS[k], codes=msFor(P,k);
+  var dk=P.desk[k]; var it=dk?dk.it:null, op=dk?dk.ops:null, cl=dk?0:null;
+  var nm=d.crmId?'<a href="'+acc(d.crmId)+'" target="_blank">'+esc(d.name)+'</a>':esc(d.name);
+  var nc=nCase(P,codes), nt=nTask(P,codes);
+  var itc=d.desk?dcell(P,k,it):'<span class="muted">n/a</span>';
+  var opc=d.desk?dcell(P,k,op):'<span class="muted">n/a</span>';
+  var clc=d.desk?'<span class="z">0</span>':'<span class="muted">n/a</span>';
+  return '<tr><td>'+nm+'</td><td><span class="pr '+d.pr.toLowerCase()+'">'+d.pr+'</span></td>'
+    +'<td class="c">'+itc+'</td><td class="c '+(op?'red':'')+'">'+opc+'</td><td class="c">'+clc+'</td>'
+    +'<td class="c">'+codes.length+'</td><td class="c '+(nc?'red':'muted')+'">'+nc+'</td><td class="c">'+nt+'</td></tr>';
+}
+function hdfcRow(P){
+  var d=P.INS.hdfc, dk=P.desk.hdfc; var op=dk?dk.ops:0, it=dk?dk.it:0;
+  var nc=(P.casesByMs['_hdfc']||[]).length; // hdfc has no milestone; unlinked-to-hdfc handled below
+  return '<tr><td><a href="'+acc(d.crmId)+'" target="_blank">'+esc(d.name)+'</a> <span class="note">no milestone yet</span></td>'
+    +'<td><span class="pr p2">—</span></td>'
+    +'<td class="c">'+dcell(P,'hdfc',it)+'</td><td class="c '+(op?'red':'')+'">'+dcell(P,'hdfc',op)+'</td><td class="c"><span class="z">0</span></td>'
+    +'<td class="c">0</td><td class="c '+(nc?'red':'muted')+'">'+nc+'</td><td class="c">0</td></tr>';
+}
+function detail(P,k){
+  var d=P.INS[k], codes=msFor(P,k);
+  var head=d.crmId?'<a href="'+acc(d.crmId)+'" target="_blank">'+esc(d.name)+'</a>':esc(d.name);
+  var dk=P.desk[k], chip='';
+  if(d.desk&&dk){chip='<span class="dchip">Desk open · IT <a href="'+desk(d.deskId)+'" target="_blank">'+dk.it+'</a> · Ops <a href="'+desk(d.deskId)+'" target="_blank">'+dk.ops+'</a> · Client 0</span>';}
+  var h='<div class="icard"><div class="ihead">'+head+' <span class="pr '+d.pr.toLowerCase()+'">'+d.pr+'</span> '+chip+'</div>';
+  codes.forEach(function(c){
+    var m=P.MS[c], cs=P.casesByMs[c]||[], ts=P.tasksByMs[c]||[];
+    h+='<div class="mrow"><div class="mline"><span class="mc">'+c+'</span> <a href="'+deal(m.dealId)+'" target="_blank" class="mt">'+esc(m.title)+'</a> <span class="prod">'+esc(m.prod)+'</span> <span class="stg">'+esc(m.stage)+'</span> <span class="sig '+m.sig+'">'+SIGTXT[m.sig]+'</span></div>';
+    if(cs.length){h+='<div class="subr"><span class="lbl">Issues</span><ul>';cs.forEach(function(s){var st=(s.status||'').toLowerCase();var cls=st.indexOf('progress')>=0?'progress':(st.indexOf('escal')>=0?'escalated':'new');h+='<li><a href="'+kase(s.id)+'" target="_blank">'+esc(s.subject)+'</a> <span class="badge '+cls+'">'+esc(s.status)+'</span></li>';});h+='</ul></div>';}
+    h+='<div class="subr"><span class="lbl">Tasks</span><ul>';
+    if(ts.length){ts.forEach(function(s){h+='<li><a href="'+task(s.id)+'" target="_blank">'+esc(s.subject)+'</a> <span class="due">'+esc(s.due)+'</span></li>';});}
+    else{h+='<li class="note">No open tasks</li>';}
+    h+='</ul></div></div>';
+  });
+  h+='</div>';return h;
+}
+function prog(P){
+  var h='<div class="icard"><div class="ihead">Programme lines <span class="pr p0">cross-account</span></div>';
+  ['M18','M19','M20'].forEach(function(c){
+    var m=P.MS[c], ts=P.tasksByMs[c]||[];
+    h+='<div class="mrow"><div class="mline"><span class="mc">'+c+'</span> <a href="'+deal(m.dealId)+'" target="_blank" class="mt">'+esc(m.title)+'</a> <span class="prod">'+esc(m.prod)+'</span> <span class="stg">'+esc(m.stage)+'</span> <span class="sig '+m.sig+'">'+SIGTXT[m.sig]+'</span></div>';
+    h+='<div class="subr"><span class="lbl">Tasks</span><ul>';
+    if(ts.length){ts.forEach(function(s){h+='<li><a href="'+task(s.id)+'" target="_blank">'+esc(s.subject)+'</a> <span class="due">'+esc(s.due)+'</span></li>';});}
+    else{h+='<li class="note">No open tasks</li>';}
+    h+='</ul></div></div>';
+  });
+  h+='</div>';return h;
+}
+function render(P){
+  document.getElementById('updated').innerHTML='Last updated: '+esc(P.updated)+' · live';
+  var keys=orderKeys(P);
+  var rows=keys.map(function(k){return sumRow(P,k);}).join('')+hdfcRow(P);
+  var h='<div class="stitle">Summary · by insurer</div>'
+    +'<table class="sum"><thead><tr><th>Insurer</th><th>Pr.</th><th class="c">Desk IT</th><th class="c">Desk Ops</th><th class="c">Desk Client</th><th class="c">Milestones</th><th class="c">Open issues</th><th class="c">Tasks</th></tr></thead><tbody>'+rows+'</tbody></table>'
+    +'<div class="legend"><b>Desk IT</b> = Cardiotrack Ethos (platform/API). <b>Desk Ops</b> = insurer medical operations (Insurance Customer Support + Service Provider Network). <b>Desk Client</b> = individual clients (0). Open + in-progress tickets. n/a = no Desk account (Tata AIA, Policy Bazaar, prospects).</div>';
+  var p0p1=keys.filter(function(k){return P.INS[k].pr!=='P2';}).map(function(k){return detail(P,k);}).join('');
+  var p2=keys.filter(function(k){return P.INS[k].pr==='P2';}).map(function(k){return detail(P,k);}).join('');
+  h+='<div class="stitle">Detail · P0 and P1 insurers</div>'+p0p1
+    +'<div class="stitle">Detail · P2 and programme</div>'+p2+prog(P);
+  if(P.desk&&P.desk.__error){h+='<div class="foot" style="color:#b3261e">Desk fetch issue this refresh: '+esc(P.desk.__error)+'</div>';}
+  document.getElementById('body').innerHTML=h;
+}
+function doRefresh(){
+  var b=document.getElementById('rbtn');
+  b.disabled=true; b.innerHTML='<span class="spin"></span>Refreshing';
+  google.script.run
+    .withSuccessHandler(function(js){try{render(JSON.parse(js));}catch(e){}b.disabled=false;b.textContent='Refresh';})
+    .withFailureHandler(function(err){b.disabled=false;b.textContent='Refresh';document.getElementById('updated').innerHTML='Refresh failed: '+esc(String(err));})
+    .refresh();
+}
+render(PAYLOAD);
+</script>
+</body></html>
