@@ -108,7 +108,7 @@ function sumRow(P,k){
   var d=P.INS[k], codes=msFor(P,k);
   var dk=P.desk[k]; var it=dk?dk.it:null, op=dk?dk.ops:null, cl=dk?0:null;
   var nm=d.crmId?'<a href="'+acc(d.crmId)+'" target="_blank">'+esc(d.name)+'</a>':esc(d.name);
-  var nc=nCase(P,codes), nt=nTask(P,codes);
+  var nc=nCase(P,codes), nt=nTask(P,codes)+((P.acctTasks&&P.acctTasks[k])?P.acctTasks[k].length:0);
   var itc=d.desk?dcell(P,k,it):'<span class="muted">n/a</span>';
   var opc=d.desk?dcell(P,k,op):'<span class="muted">n/a</span>';
   var clc=d.desk?'<span class="z">0</span>':'<span class="muted">n/a</span>';
@@ -119,10 +119,11 @@ function sumRow(P,k){
 function hdfcRow(P){
   var d=P.INS.hdfc, dk=P.desk.hdfc; var op=dk?dk.ops:0, it=dk?dk.it:0;
   var nc=(P.casesByMs['_hdfc']||[]).length; // hdfc has no milestone; unlinked-to-hdfc handled below
+  var nt=(P.acctTasks&&P.acctTasks.hdfc)?P.acctTasks.hdfc.length:0;
   return '<tr><td><a href="'+acc(d.crmId)+'" target="_blank">'+esc(d.name)+'</a> <span class="note">no milestone yet</span></td>'
     +'<td><span class="pr p2">—</span></td>'
     +'<td class="c">'+dcell(P,'hdfc',it)+'</td><td class="c '+(op?'red':'')+'">'+dcell(P,'hdfc',op)+'</td><td class="c"><span class="z">0</span></td>'
-    +'<td class="c">0</td><td class="c '+(nc?'red':'muted')+'">'+nc+'</td><td class="c">0</td></tr>';
+    +'<td class="c">0</td><td class="c '+(nc?'red':'muted')+'">'+nc+'</td><td class="c">'+nt+'</td></tr>';
 }
 function detail(P,k){
   var d=P.INS[k], codes=msFor(P,k);
@@ -139,6 +140,13 @@ function detail(P,k){
     else{h+='<li class="note">No open tasks</li>';}
     h+='</ul></div></div>';
   });
+  var at=(P.acctTasks&&P.acctTasks[k])?P.acctTasks[k]:[];
+  if(at.length){
+    h+='<div class="mrow"><div class="mline"><span class="mc">&middot;</span> <span class="mt">Account tasks</span> <span class="stg">direct on the account, not a milestone</span></div>';
+    h+='<div class="subr"><span class="lbl">Tasks</span><ul>';
+    at.forEach(function(s){h+='<li><a href="'+task(s.id)+'" target="_blank">'+esc(s.subject)+'</a> <span class="due">'+esc(s.due)+'</span></li>';});
+    h+='</ul></div></div>';
+  }
   h+='</div>';return h;
 }
 function prog(P){

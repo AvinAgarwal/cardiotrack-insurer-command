@@ -177,8 +177,8 @@ function coql_(token, query){
 function fetchOpenCases_(token){
   return coql_(token, "select id, Subject, Status, Account_Name, Deal_Name from Cases where Status != 'Closed' limit 200");
 }
-function fetchMilestoneTasks_(token){
-  return coql_(token, "select id, Subject, Status, Due_Date, What_Id from Tasks where Subject like '[M%' limit 200");
+function fetchOpenTasks_(token){
+  return coql_(token, "select id, Subject, Status, Due_Date, What_Id from Tasks where Status != 'Completed' limit 200");
 }
 
 // ---------- DESK ----------
@@ -214,7 +214,7 @@ function fetchDesk_(token){
 function getPayload(){
   var token = getAccessToken_();
   var cases = fetchOpenCases_(token);
-  var tasks = fetchMilestoneTasks_(token);
+  var tasks = fetchOpenTasks_(token);
   var desk = {};
   try { desk = fetchDesk_(token); } catch(e){ desk = {__error:String(e)}; }
 
@@ -234,21 +234,26 @@ function getPayload(){
     (casesByMs[code] = casesByMs[code] || []).push({id:c.id, subject:c.Subject, status:c.Status});
   });
 
-  // Group OPEN tasks by milestone via What_Id (deal) or subject prefix
-  var tasksByMs = {};
+  // Group OPEN tasks: milestone tasks (via deal What_Id or [Mx subject) and account tasks (via account What_Id)
+  var tasksByMs = {}, acctTasks = {};
   tasks.forEach(function(t){
     var st = (t.Status||'').toLowerCase();
     if(st==='completed' || st==='closed') return; // only open tasks
+    var rec = {id:t.id, subject:t.Subject, due:t.Due_Date||'', status:t.Status};
     var code = null;
     if(t.What_Id && t.What_Id.id && dealToCode[t.What_Id.id]) code = dealToCode[t.What_Id.id];
     if(!code){ var m = /^\[(M\d+)/.exec(t.Subject||''); if(m) code = m[1]; }
-    if(!code) return;
-    (tasksByMs[code] = tasksByMs[code] || []).push({id:t.id, subject:t.Subject, due:t.Due_Date||'', status:t.Status});
+    if(code){ (tasksByMs[code] = tasksByMs[code] || []).push(rec); return; }
+    if(t.What_Id && t.What_Id.id && accToIns[t.What_Id.id]){
+      var k = accToIns[t.What_Id.id];
+      (acctTasks[k] = acctTasks[k] || []).push(rec); return;
+    }
+    // else: not linked to a tracked deal or account (e.g. internal task) — skip
   });
 
   return JSON.stringify({
     updated: Utilities.formatDate(new Date(), 'Asia/Kolkata', "EEE dd MMM yyyy, HH:mm 'IST'"),
-    INS:INS, MS:MS, desk:desk, casesByMs:casesByMs, tasksByMs:tasksByMs,
+    INS:INS, MS:MS, desk:desk, casesByMs:casesByMs, tasksByMs:tasksByMs, acctTasks:acctTasks,
     PIPELINE:PIPELINE, crmOrg:'org55302521'
   });
 }
