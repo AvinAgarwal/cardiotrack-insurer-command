@@ -161,6 +161,43 @@ function prog(P){
   });
   h+='</div>';return h;
 }
+function rmFor(k){var M={absli:'Fareed',canara:'Fareed',sud:'Preeti',pram:'Preeti',icici:'Preeti',bajaj:'Sandhya',ageas:'Sandhya'};return M[k]||'—';}
+function insName(P,ik){if(ik==='prog')return 'Programme';return (P.INS[ik]?P.INS[ik].name:ik);}
+function issueTable(P){
+  var rows=[];
+  Object.keys(P.casesByMs||{}).forEach(function(code){
+    var ik=P.MS[code]?P.MS[code].ins:null;
+    (P.casesByMs[code]||[]).forEach(function(s){
+      var st=(s.status||'').toLowerCase();
+      var cls=st.indexOf('progress')>=0?'progress':(st.indexOf('escal')>=0?'escalated':'new');
+      rows.push('<tr><td>'+esc(insName(P,ik))+'</td><td><a href="'+kase(s.id)+'" target="_blank">'+esc(s.subject)+'</a></td><td>'+esc(rmFor(ik))+'</td><td class="c"><span class="badge '+cls+'">'+esc(s.status)+'</span></td><td class="c"><span class="muted">open</span></td></tr>');
+    });
+  });
+  var body=rows.join('')||'<tr><td colspan="5" class="muted">No open issues.</td></tr>';
+  return '<div class="stitle">Open issue closure tracker</div>'
+    +'<table class="sum"><thead><tr><th>Insurer</th><th>Issue</th><th>Owner</th><th class="c">Status</th><th class="c">Closed on</th></tr></thead><tbody>'+body+'</tbody></table>'
+    +'<div class="legend">Every open insurer issue with its owner. Closed on shows the date once the case is marked Closed in Zoho.</div>';
+}
+function taskTable(P){
+  var rows=[];
+  Object.keys(P.tasksByMs||{}).forEach(function(code){
+    var m=P.MS[code]; if(!m)return;
+    (P.tasksByMs[code]||[]).forEach(function(s){
+      rows.push('<tr><td>'+esc(insName(P,m.ins))+'</td><td><a href="'+task(s.id)+'" target="_blank">'+esc(s.subject)+'</a></td>'
+        +'<td><span class="mc">'+code+'</span> <a href="'+deal(m.dealId)+'" target="_blank">'+esc(m.title)+'</a> <span class="prod">'+esc(m.prod)+'</span> <span class="sig '+m.sig+'">'+SIGTXT[m.sig]+'</span></td>'
+        +'<td class="c">'+(s.due?esc(s.due):'<span class="muted">—</span>')+'</td></tr>');
+    });
+  });
+  Object.keys(P.acctTasks||{}).forEach(function(k){
+    (P.acctTasks[k]||[]).forEach(function(s){
+      rows.push('<tr><td>'+esc(insName(P,k))+'</td><td><a href="'+task(s.id)+'" target="_blank">'+esc(s.subject)+'</a></td><td><span class="muted">account level</span></td><td class="c">'+(s.due?esc(s.due):'<span class="muted">—</span>')+'</td></tr>');
+    });
+  });
+  var body=rows.join('')||'<tr><td colspan="4" class="muted">No open tasks.</td></tr>';
+  return '<div class="stitle">Task tracker · all open tasks</div>'
+    +'<table class="sum"><thead><tr><th>Insurer</th><th>Task</th><th>Milestone</th><th class="c">Due</th></tr></thead><tbody>'+body+'</tbody></table>'
+    +'<div class="legend">All open CRM tasks. The Milestone column carries the deal, product line and current health. Each task links to its Zoho Activity.</div>';
+}
 function render(P){
   document.getElementById('updated').innerHTML='Last updated: '+esc(P.updated)+' · live';
   var keys=orderKeys(P);
@@ -168,10 +205,7 @@ function render(P){
   var h='<div class="stitle">Summary · by insurer</div>'
     +'<table class="sum"><thead><tr><th>Insurer</th><th>Pr.</th><th class="c">Desk IT</th><th class="c">Desk Ops</th><th class="c">Desk Client</th><th class="c">Milestones</th><th class="c">Open issues</th><th class="c">Tasks</th></tr></thead><tbody>'+rows+'</tbody></table>'
     +'<div class="legend"><b>Desk IT</b> = Cardiotrack Ethos (platform/API). <b>Desk Ops</b> = insurer medical operations (Insurance Customer Support + Service Provider Network). <b>Desk Client</b> = individual clients (0). Open + in-progress tickets. n/a = no Desk account (Tata AIA, Policy Bazaar, prospects).</div>';
-  var p0p1=keys.filter(function(k){return P.INS[k].pr!=='P2';}).map(function(k){return detail(P,k);}).join('');
-  var p2=keys.filter(function(k){return P.INS[k].pr==='P2';}).map(function(k){return detail(P,k);}).join('');
-  h+='<div class="stitle">Detail · P0 and P1 insurers</div>'+p0p1
-    +'<div class="stitle">Detail · P2 and programme</div>'+p2+prog(P);
+  h+=issueTable(P)+taskTable(P);
   if(P.desk&&P.desk.__error){h+='<div class="foot" style="color:#b3261e">Desk fetch issue this refresh: '+esc(P.desk.__error)+'</div>';}
   document.getElementById('body').innerHTML=h;
   renderPipeline(P);
