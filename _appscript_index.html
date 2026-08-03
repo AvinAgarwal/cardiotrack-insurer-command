@@ -37,6 +37,8 @@ table.sum td.red{color:var(--crit);font-weight:700}.muted{color:var(--ink3)}.z{c
 .subr li:last-child{border-bottom:none}
 .badge{font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:4px}
 .badge.escalated{background:var(--critb);color:var(--crit)}.badge.progress{background:var(--accentb);color:var(--accent)}.badge.new{background:var(--buildb);color:var(--build)}
+tr.od td{background:#fdecea}tr.od td:first-child{box-shadow:inset 3px 0 0 var(--crit)}
+.odtag{font-size:8.5px;font-weight:700;color:#fff;background:var(--crit);padding:1px 5px;border-radius:4px;margin-left:5px;text-transform:uppercase;letter-spacing:.03em}
 .due{font-size:11px;color:var(--ink3)}
 a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 .foot{margin-top:16px;font-size:12px;color:var(--ink3)}
@@ -178,25 +180,36 @@ function issueTable(P){
     +'<table class="sum"><thead><tr><th>Insurer</th><th>Issue</th><th>Owner</th><th class="c">Status</th><th class="c">Closed on</th></tr></thead><tbody>'+body+'</tbody></table>'
     +'<div class="legend">Every open insurer issue with its owner. Closed on shows the date once the case is marked Closed in Zoho.</div>';
 }
+var OD_MON={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+var OD_CUT=new Date(2026,7,3); // tasks due before 3 Aug 2026
+function dueDate(s){
+  if(!s)return null; s=String(s).trim();
+  var m=s.match(/^(\d{4})-(\d{2})-(\d{2})/); if(m)return new Date(+m[1],+m[2]-1,+m[3]);
+  var p=s.split(/\s+/); if(p.length>=2 && OD_MON[p[1]]!==undefined)return new Date(p[2]?+p[2]:2026,OD_MON[p[1]],+p[0]);
+  return null;
+}
+function isOverdue(s){var d=dueDate(s);return !!(d && d<OD_CUT);}
+function dueCell(s){var od=isOverdue(s);return od?(esc(s)+' <span class="odtag">overdue</span>'):(s?esc(s):'<span class="muted">—</span>');}
 function taskTable(P){
-  var rows=[];
+  var items=[];
   Object.keys(P.tasksByMs||{}).forEach(function(code){
     var m=P.MS[code]; if(!m)return;
     (P.tasksByMs[code]||[]).forEach(function(s){
-      rows.push('<tr><td>'+esc(insName(P,m.ins))+'</td><td><a href="'+task(s.id)+'" target="_blank">'+esc(s.subject)+'</a></td>'
-        +'<td><span class="mc">'+code+'</span> <a href="'+deal(m.dealId)+'" target="_blank">'+esc(m.title)+'</a> <span class="prod">'+esc(m.prod)+'</span> <span class="sig '+m.sig+'">'+SIGTXT[m.sig]+'</span></td>'
-        +'<td class="c">'+(s.due?esc(s.due):'<span class="muted">—</span>')+'</td></tr>');
+      var mcell='<span class="mc">'+code+'</span> <a href="'+deal(m.dealId)+'" target="_blank">'+esc(m.title)+'</a> <span class="prod">'+esc(m.prod)+'</span> <span class="sig '+m.sig+'">'+SIGTXT[m.sig]+'</span>';
+      items.push({od:isOverdue(s.due), html:'<td>'+esc(insName(P,m.ins))+'</td><td><a href="'+task(s.id)+'" target="_blank">'+esc(s.subject)+'</a></td><td>'+mcell+'</td><td class="c">'+dueCell(s.due)+'</td>'});
     });
   });
   Object.keys(P.acctTasks||{}).forEach(function(k){
     (P.acctTasks[k]||[]).forEach(function(s){
-      rows.push('<tr><td>'+esc(insName(P,k))+'</td><td><a href="'+task(s.id)+'" target="_blank">'+esc(s.subject)+'</a></td><td><span class="muted">account level</span></td><td class="c">'+(s.due?esc(s.due):'<span class="muted">—</span>')+'</td></tr>');
+      items.push({od:isOverdue(s.due), html:'<td>'+esc(insName(P,k))+'</td><td><a href="'+task(s.id)+'" target="_blank">'+esc(s.subject)+'</a></td><td><span class="muted">account level</span></td><td class="c">'+dueCell(s.due)+'</td>'});
     });
   });
-  var body=rows.join('')||'<tr><td colspan="4" class="muted">No open tasks.</td></tr>';
+  items.sort(function(a,b){return (a.od?0:1)-(b.od?0:1);});
+  var nod=items.filter(function(x){return x.od;}).length;
+  var body=items.map(function(x){return '<tr class="'+(x.od?'od':'')+'">'+x.html+'</tr>';}).join('')||'<tr><td colspan="4" class="muted">No open tasks.</td></tr>';
   return '<div class="stitle">Task tracker · all open tasks</div>'
     +'<table class="sum"><thead><tr><th>Insurer</th><th>Task</th><th>Milestone</th><th class="c">Due</th></tr></thead><tbody>'+body+'</tbody></table>'
-    +'<div class="legend">All open CRM tasks. The Milestone column carries the deal, product line and current health. Each task links to its Zoho Activity.</div>';
+    +'<div class="legend"><b>'+nod+' tasks overdue</b> (due before 3 Aug and still open), highlighted red at the top for follow-up. Then the rest. Each task links to its Zoho Activity.</div>';
 }
 function render(P){
   document.getElementById('updated').innerHTML='Last updated: '+esc(P.updated)+' · live';
