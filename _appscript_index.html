@@ -165,6 +165,7 @@ function prog(P){
 }
 function rmFor(k){var M={absli:'Fareed',canara:'Fareed',sud:'Preeti',pram:'Preeti',icici:'Preeti',bajaj:'Sandhya',ageas:'Sandhya'};return M[k]||'—';}
 function insName(P,ik){if(ik==='prog')return 'Programme';return (P.INS[ik]?P.INS[ik].name:ik);}
+function shortId(prefix,id){return prefix+'-'+String(id).slice(-4);}
 function issueTable(P){
   var rows=[];
   Object.keys(P.casesByMs||{}).forEach(function(code){
@@ -172,13 +173,13 @@ function issueTable(P){
     (P.casesByMs[code]||[]).forEach(function(s){
       var st=(s.status||'').toLowerCase();
       var cls=st.indexOf('progress')>=0?'progress':(st.indexOf('escal')>=0?'escalated':'new');
-      rows.push('<tr><td>'+esc(insName(P,ik))+'</td><td><a href="'+kase(s.id)+'" target="_blank">'+esc(s.subject)+'</a></td><td>'+esc(rmFor(ik))+'</td><td class="c"><span class="badge '+cls+'">'+esc(s.status)+'</span></td><td class="c"><span class="muted">open</span></td></tr>');
+      rows.push('<tr><td><span class="mc">'+shortId('ISS',s.id)+'</span></td><td>'+esc(insName(P,ik))+'</td><td><a href="'+kase(s.id)+'" target="_blank">'+esc(s.subject)+'</a></td><td>'+esc(rmFor(ik))+'</td><td class="c"><span class="badge '+cls+'">'+esc(s.status)+'</span></td><td class="c"><span class="muted">open</span></td></tr>');
     });
   });
-  var body=rows.join('')||'<tr><td colspan="5" class="muted">No open issues.</td></tr>';
+  var body=rows.join('')||'<tr><td colspan="6" class="muted">No open issues.</td></tr>';
   return '<div class="stitle">Open issue closure tracker</div>'
-    +'<table class="sum"><thead><tr><th>Insurer</th><th>Issue</th><th>Owner</th><th class="c">Status</th><th class="c">Closed on</th></tr></thead><tbody>'+body+'</tbody></table>'
-    +'<div class="legend">Every open insurer issue with its owner. Closed on shows the date once the case is marked Closed in Zoho.</div>';
+    +'<table class="sum"><thead><tr><th>ID</th><th>Insurer</th><th>Issue</th><th>Owner</th><th class="c">Status</th><th class="c">Closed on</th></tr></thead><tbody>'+body+'</tbody></table>'
+    +'<div class="legend">Only genuine insurer complaints sit here. Quote the ID (e.g. ISS-xxxx) in emails. Closed on shows the date once the case is marked Closed in Zoho.</div>';
 }
 var OD_MON={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
 var OD_CUT=new Date(2026,7,3); // tasks due before 3 Aug 2026
@@ -196,19 +197,19 @@ function taskTable(P){
     var m=P.MS[code]; if(!m)return;
     (P.tasksByMs[code]||[]).forEach(function(s){
       var mcell='<span class="mc">'+code+'</span> <a href="'+deal(m.dealId)+'" target="_blank">'+esc(m.title)+'</a> <span class="prod">'+esc(m.prod)+'</span> <span class="sig '+m.sig+'">'+SIGTXT[m.sig]+'</span>';
-      items.push({od:isOverdue(s.due), html:'<td>'+esc(insName(P,m.ins))+'</td><td><a href="'+task(s.id)+'" target="_blank">'+esc(s.subject)+'</a></td><td>'+mcell+'</td><td class="c">'+dueCell(s.due)+'</td>'});
+      items.push({od:isOverdue(s.due), html:'<td><span class="mc">'+shortId('TSK',s.id)+'</span></td><td>'+esc(insName(P,m.ins))+'</td><td><a href="'+task(s.id)+'" target="_blank">'+esc(s.subject)+'</a></td><td>'+mcell+'</td><td class="c">'+dueCell(s.due)+'</td>'});
     });
   });
   Object.keys(P.acctTasks||{}).forEach(function(k){
     (P.acctTasks[k]||[]).forEach(function(s){
-      items.push({od:isOverdue(s.due), html:'<td>'+esc(insName(P,k))+'</td><td><a href="'+task(s.id)+'" target="_blank">'+esc(s.subject)+'</a></td><td><span class="muted">account level</span></td><td class="c">'+dueCell(s.due)+'</td>'});
+      items.push({od:isOverdue(s.due), html:'<td><span class="mc">'+shortId('TSK',s.id)+'</span></td><td>'+esc(insName(P,k))+'</td><td><a href="'+task(s.id)+'" target="_blank">'+esc(s.subject)+'</a></td><td><span class="muted">account level</span></td><td class="c">'+dueCell(s.due)+'</td>'});
     });
   });
   items.sort(function(a,b){return (a.od?0:1)-(b.od?0:1);});
   var nod=items.filter(function(x){return x.od;}).length;
-  var body=items.map(function(x){return '<tr class="'+(x.od?'od':'')+'">'+x.html+'</tr>';}).join('')||'<tr><td colspan="4" class="muted">No open tasks.</td></tr>';
+  var body=items.map(function(x){return '<tr class="'+(x.od?'od':'')+'">'+x.html+'</tr>';}).join('')||'<tr><td colspan="5" class="muted">No open tasks.</td></tr>';
   return '<div class="stitle">Task tracker · all open tasks</div>'
-    +'<table class="sum"><thead><tr><th>Insurer</th><th>Task</th><th>Milestone</th><th class="c">Due</th></tr></thead><tbody>'+body+'</tbody></table>'
+    +'<table class="sum"><thead><tr><th>ID</th><th>Insurer</th><th>Task</th><th>Milestone</th><th class="c">Due</th></tr></thead><tbody>'+body+'</tbody></table>'
     +'<div class="legend"><b>'+nod+' tasks overdue</b> (due before 3 Aug and still open), highlighted red at the top for follow-up. Then the rest. Each task links to its Zoho Activity.</div>';
 }
 function render(P){
