@@ -1,265 +1,126 @@
-<!DOCTYPE html><html><head><base target="_top"><meta charset="utf-8">
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>CT Insurer Command Page</title>
 <style>
 :root{--bg:#f5f6f8;--surface:#fff;--ink:#182031;--ink2:#4a5568;--ink3:#8492a6;--line:#e5e9ef;--good:#1e7d4f;--goodb:#e4f4ea;--build:#2b5c9a;--buildb:#e8effb;--warn:#9a6700;--warnb:#fdf3d4;--crit:#b3261e;--critb:#fbe9e7;--grey:#5b6472;--greyb:#eef1f5;--accent:#2751a3;--accentb:#e8eefb;--navy:#0d1b36;}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);padding:26px;line-height:1.45}
 .wrap{max-width:1180px;margin:0 auto}
-.hrow{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
 h1{font-size:22px;font-weight:700;color:var(--navy)}
-.sub{color:var(--ink2);font-size:13px;margin-top:4px;max-width:820px}
+.sub{color:var(--ink2);font-size:13px;margin-top:4px;max-width:880px}
 .updated{display:inline-block;margin-top:8px;font-size:12px;color:var(--ink3)}
-.rbtn{font-size:13px;font-weight:700;color:#fff;background:var(--accent);border:none;border-radius:8px;padding:9px 16px;cursor:pointer;white-space:nowrap}
-.rbtn:hover{background:#1d3f80}.rbtn:disabled{opacity:.6;cursor:default}
 .stitle{font-size:13px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.05em;margin:24px 0 10px}
 table.sum{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:13px}
 table.sum thead th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3);padding:8px 10px;border-bottom:1px solid var(--line);background:#fafbfc}
 table.sum thead th.c,table.sum td.c{text-align:center}
 table.sum td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
 table.sum tr:last-child td{border-bottom:none}
-table.sum td.red{color:var(--crit);font-weight:700}.muted{color:var(--ink3)}.z{color:var(--ink3)}
+table.sum td.red{color:var(--crit);font-weight:700} .muted{color:var(--ink3)} .z{color:var(--ink3)}
+.grp{border-left:2px solid var(--line)}
 .note{font-size:11px;color:var(--ink3)}
 .pr{font-size:10px;font-weight:700;padding:1px 6px;border-radius:5px}
-.pr.p0{background:var(--critb);color:var(--crit)}.pr.p1{background:var(--warnb);color:var(--warn)}.pr.p2{background:var(--greyb);color:var(--grey)}
+.pr.p0{background:var(--critb);color:var(--crit)} .pr.p1{background:var(--warnb);color:var(--warn)} .pr.p2{background:var(--greyb);color:var(--grey)}
 .icard{background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:14px 16px;margin-bottom:12px}
 .ihead{font-size:15px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:4px}
 .dchip{font-size:11px;font-weight:600;background:var(--accentb);color:var(--accent);padding:2px 9px;border-radius:999px;margin-left:auto}
 .mrow{border-top:1px solid var(--line);padding:10px 0 6px}
 .mline{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13.5px}
-.mc{font-weight:700;color:var(--ink2);font-size:12px}.mt{font-weight:600}
+.mc{font-weight:700;color:var(--ink2);font-size:12px} .mt{font-weight:600}
 .prod{font-size:10.5px;font-weight:600;color:var(--accent);background:var(--accentb);padding:1px 7px;border-radius:5px}
 .stg{font-size:11.5px;color:var(--ink3)}
 .sig{font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;margin-left:auto}
-.sig.build{background:var(--buildb);color:var(--build)}.sig.warn{background:var(--warnb);color:var(--warn)}.sig.crit{background:var(--critb);color:var(--crit)}.sig.good{background:var(--goodb);color:var(--good)}.sig.grey{background:var(--greyb);color:var(--grey)}
-.subr{margin:5px 0 2px 6px;display:flex;gap:8px}
-.subr .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3);min-width:44px;padding-top:3px}
-.subr ul{list-style:none;margin:0;padding:0;flex:1}
-.subr li{font-size:12.5px;padding:2px 0;border-bottom:1px dotted #eef0f3}
-.subr li:last-child{border-bottom:none}
+.sig.build{background:var(--buildb);color:var(--build)} .sig.warn{background:var(--warnb);color:var(--warn)} .sig.crit{background:var(--critb);color:var(--crit)} .sig.good{background:var(--goodb);color:var(--good)} .sig.grey{background:var(--greyb);color:var(--grey)}
+.sub{margin:5px 0 2px 6px;display:flex;gap:8px}
+.sub .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3);min-width:44px;padding-top:3px}
+.sub ul{list-style:none;margin:0;padding:0;flex:1}
+.sub li{font-size:12.5px;padding:2px 0;border-bottom:1px dotted #eef0f3}
+.sub li:last-child{border-bottom:none}
 .badge{font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:4px}
-.badge.escalated{background:var(--critb);color:var(--crit)}.badge.progress{background:var(--accentb);color:var(--accent)}.badge.new{background:var(--buildb);color:var(--build)}
-tr.od td{background:#fdecea}tr.od td:first-child{box-shadow:inset 3px 0 0 var(--crit)}
+.badge.escalated{background:var(--critb);color:var(--crit)} .badge.progress{background:var(--accentb);color:var(--accent)} .badge.new{background:var(--buildb);color:var(--build)} .badge.good{background:var(--goodb);color:var(--good)}
+.due{font-size:11px;color:var(--ink3);font-variant-numeric:tabular-nums}
+.tp{font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:4px;background:var(--greyb);color:var(--grey)}
+.tp.highest{background:var(--critb);color:var(--crit)} .tp.high{background:var(--warnb);color:var(--warn)}
+tr.od td{background:#fdecea} tr.od td:first-child{box-shadow:inset 3px 0 0 var(--crit)}
 .odtag{font-size:8.5px;font-weight:700;color:#fff;background:var(--crit);padding:1px 5px;border-radius:4px;margin-left:5px;text-transform:uppercase;letter-spacing:.03em}
-.due{font-size:11px;color:var(--ink3)}
-a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
 .foot{margin-top:16px;font-size:12px;color:var(--ink3)}
 .legend{font-size:11.5px;color:var(--ink2);margin-top:6px}
-.spin{display:inline-block;width:13px;height:13px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:6px}
-@keyframes sp{to{transform:rotate(360deg)}}
-.tabs{display:flex;gap:4px;margin:18px 0 2px;border-bottom:1px solid var(--line)}
-.tab{font-size:13px;font-weight:600;color:var(--ink2);background:none;border:none;padding:9px 14px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
-.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-.tab:hover{color:var(--accent)}
-table.pipe{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:12.5px;margin-bottom:10px}
-table.pipe th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink3);padding:7px 8px;border-bottom:1px solid var(--line);background:#fafbfc;white-space:nowrap}
-table.pipe th.c{text-align:center}
-table.pipe td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
-table.pipe td.c{text-align:center}
-table.pipe tr:last-child td{border-bottom:none}
-.rel{font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:4px}
-.rel.customer{background:var(--goodb);color:var(--good)}.rel.prospect{background:var(--greyb);color:var(--grey)}
-.sv{display:inline-block;font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:999px}
-.sv.live{background:var(--goodb);color:var(--good)}.sv.pilot{background:var(--buildb);color:var(--build)}.sv.prop{background:var(--warnb);color:var(--warn)}
-.sv.none{color:#c8cfda}
-.ty{font-size:10.5px;color:var(--ink3)}
-.cn{font-weight:600}.ct{font-size:11px;color:var(--ink3)}
-.pnote{font-size:11.5px;color:var(--ink2);background:#fff8ec;border:1px solid #f0dcae;border-radius:8px;padding:8px 12px;margin:6px 0 10px}
+.hrow{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.rbtn{font-size:12.5px;font-weight:700;color:#fff;background:#2751a3;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;white-space:nowrap}
+.rbtn:hover{background:#1d3f80}
+.rmeta{font-size:11px;color:var(--ink3);text-align:right;margin-top:3px}
 </style></head><body><div class="wrap">
-<div class="hrow">
-  <div>
-    <h1>CT Insurer Command Page</h1>
-    <div class="sub">One page per insurer. Desk shows <b>open tickets only</b>, split into IT (Ethos platform), Ops (insurer medical operations) and Client (individual-client queries). Milestones, issues and tasks come live from CRM. Every row links to its Zoho record.</div>
-    <span class="updated" id="updated"></span>
-  </div>
-  <button class="rbtn" id="rbtn" onclick="doRefresh()">Refresh</button>
-</div>
-<div class="tabs"><button class="tab active" id="tab-cmd" onclick="showTab('cmd')">Command Page</button><button class="tab" id="tab-pipe" onclick="showTab('pipe')">Pipeline</button></div>
-<div id="body"></div>
-<div id="pipeline" style="display:none"></div>
-<div class="foot">Command Page is live from Zoho CRM (Cases, Tasks) + Zoho Desk (open tickets); click <b>Refresh</b> to re-pull. Pipeline is a curated growth list you update via chat. Each milestone links to its Deal, each issue to its Case, each task to its Activity.</div>
-</div>
+<h1>CT Insurer Command Page</h1>
+<div class="sub">One page per insurer. Desk shows <b>open tickets only</b>, split into IT (Ethos platform), Ops (insurer medical operations) and Client (individual-client queries). Milestones, issues and tasks come from CRM. Every row links straight to its Zoho record.</div>
+<span class="updated">Last updated: Mon 03 Aug 2026 &middot; CRM issues and tasks are a live pull just now; Desk open-ticket counts are from the 31 Jul engine run</span>
 
-<script>
-var PAYLOAD = <?!= payload ?>;
-var ORG = (PAYLOAD.crmOrg||'org55302521');
-var SIGTXT={good:'On track',build:'Building',warn:'At risk',crit:'Blocked on our side',grey:'Qualifying'};
-function acc(i){return 'https://crm.zoho.com/crm/'+ORG+'/tab/Accounts/'+i;}
-function deal(i){return 'https://crm.zoho.com/crm/'+ORG+'/tab/Deals/'+i;}
-function kase(i){return 'https://crm.zoho.com/crm/'+ORG+'/tab/Cases/'+i;}
-function task(i){return 'https://crm.zoho.com/crm/'+ORG+'/tab/Activities/'+i;}
-function desk(i){return 'https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/'+i;}
-function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+<div class="stitle">Summary &middot; by insurer</div>
+<table class="sum"><thead><tr><th>Insurer</th><th>Pr.</th><th class="c grp">Desk IT</th><th class="c">Desk Ops</th><th class="c">Desk Client</th><th class="c grp">Milestones</th><th class="c">Open issues</th><th class="c">Tasks</th></tr></thead>
+<tbody>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000014075025" target="_blank">Aditya Birla Sun Life</a></td><td><span class="pr p0">P0</span></td><td class="c"><span class="z">0</span></td><td class="c red"><a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000008490454" target="_blank">33</a></td><td class="c"><span class="z">0</span></td><td class="c">1</td><td class="c red">6</td><td class="c">1</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000021038001" target="_blank">Canara HSBC Life</a></td><td><span class="pr p0">P0</span></td><td class="c"><span class="z">0</span></td><td class="c red"><a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000008490559" target="_blank">15</a></td><td class="c"><span class="z">0</span></td><td class="c">1</td><td class="c red">1</td><td class="c">4</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000019312002" target="_blank">Bajaj Life</a></td><td><span class="pr p0">P0</span></td><td class="c"><a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000065918137" target="_blank">1</a></td><td class="c red"><a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000065918137" target="_blank">11</a></td><td class="c"><span class="z">0</span></td><td class="c">2</td><td class="c red">3</td><td class="c">1</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000014075169" target="_blank">Tata AIA Life</a></td><td><span class="pr p0">P0</span></td><td class="c"><span class="muted">n/a</span></td><td class="c "><span class="muted">n/a</span></td><td class="c"><span class="muted">n/a</span></td><td class="c">3</td><td class="c muted">0</td><td class="c">3</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000018768008" target="_blank">Policy Bazaar</a></td><td><span class="pr p0">P0</span></td><td class="c"><span class="muted">n/a</span></td><td class="c "><span class="muted">n/a</span></td><td class="c"><span class="muted">n/a</span></td><td class="c">1</td><td class="c muted">0</td><td class="c">2</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000020775001" target="_blank">Thyrocare</a></td><td><span class="pr p0">P0</span></td><td class="c"><span class="muted">n/a</span></td><td class="c "><span class="muted">n/a</span></td><td class="c"><span class="muted">n/a</span></td><td class="c">1</td><td class="c muted">0</td><td class="c">5</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000022063010" target="_blank">Pramerica Life</a></td><td><span class="pr p1">P1</span></td><td class="c"><span class="z">0</span></td><td class="c red"><a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000008490562" target="_blank">7</a></td><td class="c"><span class="z">0</span></td><td class="c">1</td><td class="c red">1</td><td class="c">0</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000033536001" target="_blank">Ageas Federal Life</a></td><td><span class="pr p1">P1</span></td><td class="c"><a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000017742310" target="_blank">1</a></td><td class="c red"><a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000017742310" target="_blank">5</a></td><td class="c"><span class="z">0</span></td><td class="c">2</td><td class="c muted">0</td><td class="c">1</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000019483003" target="_blank">SUD Life</a></td><td><span class="pr p1">P1</span></td><td class="c"><span class="z">0</span></td><td class="c red"><a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000008490535" target="_blank">3</a></td><td class="c"><span class="z">0</span></td><td class="c">1</td><td class="c red">1</td><td class="c">1</td></tr>
+<tr><td>LIC / Other</td><td><span class="pr p1">P1</span></td><td class="c"><span class="muted">n/a</span></td><td class="c "><span class="muted">n/a</span></td><td class="c"><span class="muted">n/a</span></td><td class="c">1</td><td class="c muted">0</td><td class="c">1</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000030687005" target="_blank">ICICI Lombard</a></td><td><span class="pr p2">P2</span></td><td class="c"><span class="z">0</span></td><td class="c red"><a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000017143015" target="_blank">1</a></td><td class="c"><span class="z">0</span></td><td class="c">1</td><td class="c muted">0</td><td class="c">1</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000033559035" target="_blank">Tata AIG</a></td><td><span class="pr p2">P2</span></td><td class="c"><span class="muted">n/a</span></td><td class="c "><span class="muted">n/a</span></td><td class="c"><span class="muted">n/a</span></td><td class="c">1</td><td class="c muted">0</td><td class="c">1</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000019683017" target="_blank">ICICI Prudential</a></td><td><span class="pr p2">P2</span></td><td class="c"><span class="muted">n/a</span></td><td class="c "><span class="muted">n/a</span></td><td class="c"><span class="muted">n/a</span></td><td class="c">1</td><td class="c muted">0</td><td class="c">1</td></tr>
+<tr><td><a href="https://crm.zoho.com/crm/org55302521/tab/Accounts/1575152000016686001" target="_blank">HDFC Life</a> <span class="note">no milestone yet</span></td><td><span class="pr p2">—</span></td><td class="c"><span class="z">0</span></td><td class="c"><a href="https://desk.cardiotrack.io/support/cardiotrack/ShowHomePage.do#Accounts/dv/130513000008490475" target="_blank">1</a></td><td class="c"><span class="z">0</span></td><td class="c">0</td><td class="c z">0</td><td class="c">0</td></tr>
+</tbody></table>
+<div class="legend"><b>Desk IT</b> = Cardiotrack Ethos (platform/API). <b>Desk Ops</b> = insurer medical operations (Insurance Customer Support + WhatsApp Group + Service Provider Network). <b>Desk Client</b> = Cardiotrack Client Support (individual clients, not linked to insurer accounts, so 0). Counts are open + in-progress tickets. n/a = no Desk account matched (Tata AIA, Policy Bazaar and prospects). Numbers link into Zoho Desk; insurer names open the Zoho CRM account.</div>
+<div class="legend" style="margin-top:8px"><b>Account managers:</b> Fareed Pasha (Aditya Birla Sun Life, Canara HSBC) &middot; Preeti (SUD Life, Pramerica, ICICI) &middot; Sandhya (Bajaj Life, Ageas Federal). The RM owns escalation, support and the weekly relationship touch for their accounts.</div>
 
-function msFor(P,k){return Object.keys(P.MS).filter(function(c){return P.MS[c].ins===k;});}
-function nCase(P,codes){var n=0;codes.forEach(function(c){n+=(P.casesByMs[c]||[]).length;});return n;}
-function nTask(P,codes){var n=0;codes.forEach(function(c){n+=(P.tasksByMs[c]||[]).length;});return n;}
-function orderKeys(P){
-  var ord={P0:0,P1:1,P2:2};
-  return Object.keys(P.INS).filter(function(k){return k!=='hdfc';}).sort(function(a,b){
-    var pa=ord[P.INS[a].pr],pb=ord[P.INS[b].pr];
-    if(pa!==pb)return pa-pb;
-    var oa=(P.desk[a]?P.desk[a].ops:-1),ob=(P.desk[b]?P.desk[b].ops:-1);
-    return ob-oa;
-  });
-}
-function dcell(P,k,val){
-  var d=P.INS[k]; if(!d.desk) return '<span class="muted">n/a</span>';
-  if(!val) return '<span class="z">0</span>';
-  return '<a href="'+desk(d.deskId)+'" target="_blank">'+val+'</a>';
-}
-function sumRow(P,k){
-  var d=P.INS[k], codes=msFor(P,k);
-  var dk=P.desk[k]; var it=dk?dk.it:null, op=dk?dk.ops:null, cl=dk?0:null;
-  var nm=d.crmId?'<a href="'+acc(d.crmId)+'" target="_blank">'+esc(d.name)+'</a>':esc(d.name);
-  var nc=nCase(P,codes), nt=nTask(P,codes)+((P.acctTasks&&P.acctTasks[k])?P.acctTasks[k].length:0);
-  var itc=d.desk?dcell(P,k,it):'<span class="muted">n/a</span>';
-  var opc=d.desk?dcell(P,k,op):'<span class="muted">n/a</span>';
-  var clc=d.desk?'<span class="z">0</span>':'<span class="muted">n/a</span>';
-  return '<tr><td>'+nm+'</td><td><span class="pr '+d.pr.toLowerCase()+'">'+d.pr+'</span></td>'
-    +'<td class="c">'+itc+'</td><td class="c '+(op?'red':'')+'">'+opc+'</td><td class="c">'+clc+'</td>'
-    +'<td class="c">'+codes.length+'</td><td class="c '+(nc?'red':'muted')+'">'+nc+'</td><td class="c">'+nt+'</td></tr>';
-}
-function hdfcRow(P){
-  var d=P.INS.hdfc, dk=P.desk.hdfc; var op=dk?dk.ops:0, it=dk?dk.it:0;
-  var nc=(P.casesByMs['_hdfc']||[]).length; // hdfc has no milestone; unlinked-to-hdfc handled below
-  var nt=(P.acctTasks&&P.acctTasks.hdfc)?P.acctTasks.hdfc.length:0;
-  return '<tr><td><a href="'+acc(d.crmId)+'" target="_blank">'+esc(d.name)+'</a> <span class="note">no milestone yet</span></td>'
-    +'<td><span class="pr p2">—</span></td>'
-    +'<td class="c">'+dcell(P,'hdfc',it)+'</td><td class="c '+(op?'red':'')+'">'+dcell(P,'hdfc',op)+'</td><td class="c"><span class="z">0</span></td>'
-    +'<td class="c">0</td><td class="c '+(nc?'red':'muted')+'">'+nc+'</td><td class="c">'+nt+'</td></tr>';
-}
-function detail(P,k){
-  var d=P.INS[k], codes=msFor(P,k);
-  var head=d.crmId?'<a href="'+acc(d.crmId)+'" target="_blank">'+esc(d.name)+'</a>':esc(d.name);
-  var dk=P.desk[k], chip='';
-  if(d.desk&&dk){chip='<span class="dchip">Desk open · IT <a href="'+desk(d.deskId)+'" target="_blank">'+dk.it+'</a> · Ops <a href="'+desk(d.deskId)+'" target="_blank">'+dk.ops+'</a> · Client 0</span>';}
-  var h='<div class="icard"><div class="ihead">'+head+' <span class="pr '+d.pr.toLowerCase()+'">'+d.pr+'</span> '+chip+'</div>';
-  codes.forEach(function(c){
-    var m=P.MS[c], cs=P.casesByMs[c]||[], ts=P.tasksByMs[c]||[];
-    h+='<div class="mrow"><div class="mline"><span class="mc">'+c+'</span> <a href="'+deal(m.dealId)+'" target="_blank" class="mt">'+esc(m.title)+'</a> <span class="prod">'+esc(m.prod)+'</span> <span class="stg">'+esc(m.stage)+'</span> <span class="sig '+m.sig+'">'+SIGTXT[m.sig]+'</span></div>';
-    if(cs.length){h+='<div class="subr"><span class="lbl">Issues</span><ul>';cs.forEach(function(s){var st=(s.status||'').toLowerCase();var cls=st.indexOf('progress')>=0?'progress':(st.indexOf('escal')>=0?'escalated':'new');h+='<li><a href="'+kase(s.id)+'" target="_blank">'+esc(s.subject)+'</a> <span class="badge '+cls+'">'+esc(s.status)+'</span></li>';});h+='</ul></div>';}
-    h+='<div class="subr"><span class="lbl">Tasks</span><ul>';
-    if(ts.length){ts.forEach(function(s){h+='<li><a href="'+task(s.id)+'" target="_blank">'+esc(s.subject)+'</a> <span class="due">'+esc(s.due)+'</span></li>';});}
-    else{h+='<li class="note">No open tasks</li>';}
-    h+='</ul></div></div>';
-  });
-  var at=(P.acctTasks&&P.acctTasks[k])?P.acctTasks[k]:[];
-  if(at.length){
-    h+='<div class="mrow"><div class="mline"><span class="mc">&middot;</span> <span class="mt">Account tasks</span> <span class="stg">direct on the account, not a milestone</span></div>';
-    h+='<div class="subr"><span class="lbl">Tasks</span><ul>';
-    at.forEach(function(s){h+='<li><a href="'+task(s.id)+'" target="_blank">'+esc(s.subject)+'</a> <span class="due">'+esc(s.due)+'</span></li>';});
-    h+='</ul></div></div>';
-  }
-  h+='</div>';return h;
-}
-function prog(P){
-  var h='<div class="icard"><div class="ihead">Programme lines <span class="pr p0">cross-account</span></div>';
-  ['M18','M19','M20'].forEach(function(c){
-    var m=P.MS[c], ts=P.tasksByMs[c]||[];
-    h+='<div class="mrow"><div class="mline"><span class="mc">'+c+'</span> <a href="'+deal(m.dealId)+'" target="_blank" class="mt">'+esc(m.title)+'</a> <span class="prod">'+esc(m.prod)+'</span> <span class="stg">'+esc(m.stage)+'</span> <span class="sig '+m.sig+'">'+SIGTXT[m.sig]+'</span></div>';
-    h+='<div class="subr"><span class="lbl">Tasks</span><ul>';
-    if(ts.length){ts.forEach(function(s){h+='<li><a href="'+task(s.id)+'" target="_blank">'+esc(s.subject)+'</a> <span class="due">'+esc(s.due)+'</span></li>';});}
-    else{h+='<li class="note">No open tasks</li>';}
-    h+='</ul></div></div>';
-  });
-  h+='</div>';return h;
-}
-function rmFor(k){var M={absli:'Fareed',canara:'Fareed',sud:'Preeti',pram:'Preeti',icici:'Preeti',bajaj:'Sandhya',ageas:'Sandhya'};return M[k]||'—';}
-function insName(P,ik){if(ik==='prog')return 'Programme';return (P.INS[ik]?P.INS[ik].name:ik);}
-function shortId(prefix,id){return prefix+'-'+String(id).slice(-4);}
-function issueTable(P){
-  var rows=[];
-  Object.keys(P.casesByMs||{}).forEach(function(code){
-    var ik=P.MS[code]?P.MS[code].ins:null;
-    (P.casesByMs[code]||[]).forEach(function(s){
-      var st=(s.status||'').toLowerCase();
-      var cls=st.indexOf('progress')>=0?'progress':(st.indexOf('escal')>=0?'escalated':'new');
-      rows.push('<tr><td><span class="mc">'+shortId('ISS',s.id)+'</span></td><td>'+esc(insName(P,ik))+'</td><td><a href="'+kase(s.id)+'" target="_blank">'+esc(s.subject)+'</a></td><td>'+esc(rmFor(ik))+'</td><td class="c"><span class="badge '+cls+'">'+esc(s.status)+'</span></td><td class="c"><span class="muted">open</span></td></tr>');
-    });
-  });
-  var body=rows.join('')||'<tr><td colspan="6" class="muted">No open issues.</td></tr>';
-  return '<div class="stitle">Open issue closure tracker</div>'
-    +'<table class="sum"><thead><tr><th>ID</th><th>Insurer</th><th>Issue</th><th>Owner</th><th class="c">Status</th><th class="c">Closed on</th></tr></thead><tbody>'+body+'</tbody></table>'
-    +'<div class="legend">Only genuine insurer complaints sit here. Quote the ID (e.g. ISS-xxxx) in emails. Closed on shows the date once the case is marked Closed in Zoho.</div>';
-}
-var OD_MON={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
-var OD_CUT=new Date(2026,7,3); // tasks due before 3 Aug 2026
-function dueDate(s){
-  if(!s)return null; s=String(s).trim();
-  var m=s.match(/^(\d{4})-(\d{2})-(\d{2})/); if(m)return new Date(+m[1],+m[2]-1,+m[3]);
-  var p=s.split(/\s+/); if(p.length>=2 && OD_MON[p[1]]!==undefined)return new Date(p[2]?+p[2]:2026,OD_MON[p[1]],+p[0]);
-  return null;
-}
-function isOverdue(s){var d=dueDate(s);return !!(d && d<OD_CUT);}
-function dueCell(s){var od=isOverdue(s);return od?(esc(s)+' <span class="odtag">overdue</span>'):(s?esc(s):'<span class="muted">—</span>');}
-function taskTable(P){
-  var items=[];
-  Object.keys(P.tasksByMs||{}).forEach(function(code){
-    var m=P.MS[code]; if(!m)return;
-    (P.tasksByMs[code]||[]).forEach(function(s){
-      var mcell='<span class="mc">'+code+'</span> <a href="'+deal(m.dealId)+'" target="_blank">'+esc(m.title)+'</a> <span class="prod">'+esc(m.prod)+'</span> <span class="sig '+m.sig+'">'+SIGTXT[m.sig]+'</span>';
-      items.push({od:isOverdue(s.due), html:'<td><span class="mc">'+shortId('TSK',s.id)+'</span></td><td>'+esc(insName(P,m.ins))+'</td><td><a href="'+task(s.id)+'" target="_blank">'+esc(s.subject)+'</a></td><td>'+mcell+'</td><td class="c">'+dueCell(s.due)+'</td>'});
-    });
-  });
-  Object.keys(P.acctTasks||{}).forEach(function(k){
-    (P.acctTasks[k]||[]).forEach(function(s){
-      items.push({od:isOverdue(s.due), html:'<td><span class="mc">'+shortId('TSK',s.id)+'</span></td><td>'+esc(insName(P,k))+'</td><td><a href="'+task(s.id)+'" target="_blank">'+esc(s.subject)+'</a></td><td><span class="muted">account level</span></td><td class="c">'+dueCell(s.due)+'</td>'});
-    });
-  });
-  items.sort(function(a,b){return (a.od?0:1)-(b.od?0:1);});
-  var nod=items.filter(function(x){return x.od;}).length;
-  var body=items.map(function(x){return '<tr class="'+(x.od?'od':'')+'">'+x.html+'</tr>';}).join('')||'<tr><td colspan="5" class="muted">No open tasks.</td></tr>';
-  return '<div class="stitle">Task tracker · all open tasks</div>'
-    +'<table class="sum"><thead><tr><th>ID</th><th>Insurer</th><th>Task</th><th>Milestone</th><th class="c">Due</th></tr></thead><tbody>'+body+'</tbody></table>'
-    +'<div class="legend"><b>'+nod+' tasks overdue</b> (due before 3 Aug and still open), highlighted red at the top for follow-up. Then the rest. Each task links to its Zoho Activity.</div>';
-}
-function render(P){
-  document.getElementById('updated').innerHTML='Last updated: '+esc(P.updated)+' · live';
-  var keys=orderKeys(P);
-  var rows=keys.map(function(k){return sumRow(P,k);}).join('')+hdfcRow(P);
-  var h='<div class="stitle">Summary · by insurer</div>'
-    +'<table class="sum"><thead><tr><th>Insurer</th><th>Pr.</th><th class="c">Desk IT</th><th class="c">Desk Ops</th><th class="c">Desk Client</th><th class="c">Milestones</th><th class="c">Open issues</th><th class="c">Tasks</th></tr></thead><tbody>'+rows+'</tbody></table>'
-    +'<div class="legend"><b>Desk IT</b> = Cardiotrack Ethos (platform/API). <b>Desk Ops</b> = insurer medical operations (Insurance Customer Support + Service Provider Network). <b>Desk Client</b> = individual clients (0). Open + in-progress tickets. n/a = no Desk account (Tata AIA, Policy Bazaar, prospects).</div>';
-  h+=issueTable(P)+taskTable(P);
-  if(P.desk&&P.desk.__error){h+='<div class="foot" style="color:#b3261e">Desk fetch issue this refresh: '+esc(P.desk.__error)+'</div>';}
-  document.getElementById('body').innerHTML=h;
-  renderPipeline(P);
-}
-function showTab(t){
-  document.getElementById('body').style.display=(t==='cmd')?'block':'none';
-  document.getElementById('pipeline').style.display=(t==='pipe')?'block':'none';
-  document.getElementById('tab-cmd').className='tab'+(t==='cmd'?' active':'');
-  document.getElementById('tab-pipe').className='tab'+(t==='pipe'?' active':'');
-}
-function svc(v){var m={Live:'live',Pilot:'pilot',Prop:'prop'};if(!v)return '<span class="sv none">·</span>';return '<span class="sv '+(m[v]||'prop')+'">'+esc(v)+'</span>';}
-function renderPipeline(P){
-  var pl=P.PIPELINE; var el=document.getElementById('pipeline'); if(!pl){el.innerHTML='';return;}
-  var cols=[['h','Home'],['d','DC visit'],['e','AI ECG'],['m','AI MER'],['v','Dr VMER'],['c','DC comp'],['a','Analytics']];
-  var rows=pl.india.map(function(r){
-    var sc=cols.map(function(c){return '<td class="c">'+svc((r.s||{})[c[0]])+'</td>';}).join('');
-    var contact=r.cn?('<span class="cn">'+esc(r.cn)+'</span><div class="ct">'+esc(r.ct)+'</div>'):'<span class="ct">—</span>';
-    return '<tr><td><b>'+esc(r.co)+'</b></td><td><span class="ty">'+esc(r.ty)+'</span></td>'
-      +'<td><span class="rel '+r.rel.toLowerCase()+'">'+esc(r.rel)+'</span></td>'+sc+'<td>'+contact+'</td></tr>';
-  }).join('');
-  var head='<tr><th>Company</th><th>Type</th><th>Status</th>'+cols.map(function(c){return '<th class="c">'+c[1]+'</th>';}).join('')+'<th>Key contact</th></tr>';
-  var nC=pl.india.filter(function(r){return r.rel==='Customer';}).length, nP=pl.india.length-nC;
-  var h='<div class="pnote">'+esc(pl.note)+'</div>';
-  h+='<div class="stitle">India &middot; life &amp; health insurers &times; services ('+nC+' customers, '+nP+' prospects)</div>';
-  h+='<table class="pipe"><thead>'+head+'</thead><tbody>'+rows+'</tbody></table>';
-  var irows=pl.intl.map(function(m){return '<tr><td style="white-space:nowrap"><b>'+esc(m.mkt)+'</b></td><td>'+esc(m.tgt)+'</td><td style="white-space:nowrap">'+esc(m.fit)+'</td><td>'+esc(m.why)+'</td></tr>';}).join('');
-  h+='<div class="stitle">International &middot; export opportunities (AI ECG &amp; digital products)</div>';
-  h+='<table class="pipe"><thead><tr><th>Market</th><th>Example targets</th><th>Products that fit</th><th>Why</th></tr></thead><tbody>'+irows+'</tbody></table>';
-  var rr=pl.reins.map(function(x){return '<li style="margin:4px 0"><b>'+esc(x.n)+'</b> &mdash; '+esc(x.note)+'</li>';}).join('');
-  h+='<div class="stitle">One-to-many channel &middot; reinsurer platforms</div><ul style="margin:0 0 12px;padding-left:18px;font-size:12.5px;color:var(--ink2)">'+rr+'</ul>';
-  el.innerHTML=h;
-}
-function doRefresh(){
-  var b=document.getElementById('rbtn');
-  b.disabled=true; b.innerHTML='<span class="spin"></span>Refreshing';
-  google.script.run
-    .withSuccessHandler(function(js){try{render(JSON.parse(js));}catch(e){}b.disabled=false;b.textContent='Refresh';})
-    .withFailureHandler(function(err){b.disabled=false;b.textContent='Refresh';document.getElementById('updated').innerHTML='Refresh failed: '+esc(String(err));})
-    .refresh();
-}
-render(PAYLOAD);
-</script>
-</body></html>
+<div class="stitle">Open issue closure tracker</div>
+<table class="sum"><thead><tr><th>ID</th><th>Insurer</th><th>Issue</th><th>Owner</th><th class="c">Raised</th><th class="c">Status</th><th class="c">Closed on</th></tr></thead>
+<tbody>
+<tr><td><span class="mc">ISS-5004</span></td><td>Canara HSBC</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000091055004" target="_blank">Ensure DC assignment within 2 hours (incl manual / on-hold delay)</a></td><td>Kanchan</td><td class="c">03 Aug 2026</td><td class="c"><span class="badge progress">In Progress</span></td><td class="c"><span class="muted">open</span></td></tr>
+<tr><td><span class="mc">ISS-1013</span></td><td>Aditya Birla Sun Life</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Cases/1575152000071871013" target="_blank">MIS Issue</a></td><td>Fareed</td><td class="c">13 Nov 2025</td><td class="c"><span class="badge progress">In Progress</span></td><td class="c"><span class="muted">open</span></td></tr>
+<tr><td><span class="mc">ISS-5009</span></td><td>Aditya Birla Sun Life</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090705009" target="_blank">Vital photos (H/W/BP): post weekly % for 4 weeks then close (77% baseline)</a></td><td>Najmul</td><td class="c">10 Aug 2026</td><td class="c"><span class="badge progress">In Progress</span></td><td class="c"><span class="muted">open</span></td></tr>
+<tr><td><span class="mc">ISS-5010</span></td><td>Aditya Birla Sun Life</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090705010" target="_blank">Control grievances: categorise + negative checkbox pop up at report closure</a></td><td>Kanchan</td><td class="c">10 Aug 2026</td><td class="c"><span class="badge progress">In Progress</span></td><td class="c"><span class="muted">open</span></td></tr>
+<tr><td><span class="mc">ISS-5011</span></td><td>Aditya Birla Sun Life</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090705011" target="_blank">DC empanelment: get ABSLI consent on existing DCs, then balance cities</a></td><td>Pronit</td><td class="c">20 Aug 2026</td><td class="c"><span class="badge progress">In Progress</span></td><td class="c"><span class="muted">open</span></td></tr>
+<tr><td><span class="mc">ISS-2001</span></td><td>Aditya Birla Sun Life</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000091142001" target="_blank">Audit repeat ECG cases and control</a></td><td>Fareed</td><td class="c">04 Aug 2026</td><td class="c"><span class="badge progress">In Progress</span></td><td class="c"><span class="muted">open</span></td></tr>
+<tr><td><span class="mc">ISS-2002</span></td><td>Aditya Birla Sun Life</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000091142002" target="_blank">Record and reduce pre-upload case rejections</a></td><td>Fareed</td><td class="c">04 Aug 2026</td><td class="c"><span class="badge progress">In Progress</span></td><td class="c"><span class="muted">open</span></td></tr>
+<tr><td><span class="mc">ISS-2005</span></td><td>Bajaj Life</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000091142005" target="_blank">Improve low appointment scheduling</a></td><td>Sandhya</td><td class="c">04 Aug 2026</td><td class="c"><span class="badge progress">In Progress</span></td><td class="c"><span class="muted">open</span></td></tr>
+<tr><td><span class="mc">ISS-5008</span></td><td>Bajaj Life</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090705008" target="_blank">Lift T-day report linking toward 100% T-day closure</a></td><td>Sandhya</td><td class="c">04 Aug 2026</td><td class="c"><span class="badge progress">In Progress</span></td><td class="c"><span class="muted">open</span></td></tr>
+<tr><td><span class="mc">ISS-2006</span></td><td>Bajaj Life</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000091142006" target="_blank">Fix low report closures on Sundays</a></td><td>Sandhya</td><td class="c">04 Aug 2026</td><td class="c"><span class="badge progress">In Progress</span></td><td class="c"><span class="muted">open</span></td></tr>
+<tr><td><span class="mc">ISS-5020</span></td><td>Pramerica Life</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090705020" target="_blank">Fix DC allocation delay on manual cases</a></td><td>Preeti</td><td class="c">04 Aug 2026</td><td class="c"><span class="badge progress">In Progress</span></td><td class="c"><span class="muted">open</span></td></tr>
+<tr><td><span class="mc">ISS-2004</span></td><td>SUD Life</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000091142004" target="_blank">Add support statuses (pending with insurer, late arrival)</a></td><td>Preeti</td><td class="c">04 Aug 2026</td><td class="c"><span class="badge progress">In Progress</span></td><td class="c"><span class="muted">open</span></td></tr>
+</tbody></table>
+<div class="legend">Only genuine insurer complaints sit here. Quote the ID (for example ISS-5004) when referring to an issue in an email. Everything else, MIS updates, feature requests, API and performance fixes, now lives in the Task tracker below. 12 open issues, 0 closed.</div>
+
+<div class="stitle">Task tracker &middot; all open tasks</div>
+<table class="sum"><thead><tr><th>ID</th><th>Insurer</th><th>Task</th><th>Milestone</th><th class="c">Due</th><th class="c">Priority</th></tr></thead>
+<tbody>
+<tr class="od"><td><span class="mc">TSK-7004</span></td><td>Canara HSBC Life</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090707004" target="_blank">Confirm unblock live + daily flow restarted; ramp to ₹5.5L/mo</a></td><td><span class="mc">M1</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090678006" target="_blank">Ramp to ₹5.5L/mo</a> <span class="prod">PPMC</span> <span class="sig build">Building</span></td><td class="c">31 Jul <span class="odtag">overdue</span></td><td class="c"><span class="tp highest">Highest</span></td></tr>
+<tr class="od"><td><span class="mc">TSK-7006</span></td><td>Policy Bazaar</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090987006" target="_blank">Daily and next-day appointment MIS implementation</a></td><td><span class="mc">M6</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090678011" target="_blank">200 pilot → ₹5L/mo</a> <span class="prod">PPMC</span> <span class="sig build">Building</span></td><td class="c">01 Aug <span class="odtag">overdue</span></td><td class="c"><span class="tp high">High</span></td></tr>
+<tr class=""><td><span class="mc">TSK-7098</span></td><td>Ageas Federal Life</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090987098" target="_blank">Email Gaurav on the E-channel business</a></td><td><span class="mc">M11</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684016" target="_blank">Non-inhouse enablement (+₹1L)</a> <span class="prod">PPMC</span> <span class="sig build">Building</span></td><td class="c">04 Aug</td><td class="c"><span class="tp high">High</span></td></tr>
+<tr class=""><td><span class="mc">TSK-7094</span></td><td>Bajaj Life</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090987094" target="_blank">ECG AI presentation to MunichRe and Bajaj Life</a></td><td><span class="mc">M3</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090678008" target="_blank">ECG AI agreement signed</a> <span class="prod">AI ECG</span> <span class="sig warn">At risk</span></td><td class="c">07 Aug</td><td class="c"><span class="tp high">High</span></td></tr>
+<tr class=""><td><span class="mc">TSK-7033</span></td><td>ICICI Lombard</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090987033" target="_blank">Meeting with Delly Dsouza</a></td><td><span class="mc">M4</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090678009" target="_blank">Orderly wind-down + collect</a> <span class="prod">PPMC</span> <span class="sig grey">Qualifying</span></td><td class="c">07 Aug</td><td class="c"><span class="tp high">High</span></td></tr>
+<tr class=""><td><span class="mc">TSK-5027</span></td><td>LIC / Other</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090705027" target="_blank">Open LIC channel via MD India; first revenue Oct</a></td><td><span class="mc">M15</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684020" target="_blank">Open channel via MD India</a> <span class="prod">PPMC</span> <span class="sig grey">Qualifying</span></td><td class="c">31 Aug</td><td class="c"><span class="tp high">High</span></td></tr>
+<tr class=""><td><span class="mc">TSK-7089</span></td><td>Policy Bazaar</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090987089" target="_blank">Increase pincodes 100 → 1000 for PB</a></td><td><span class="mc">M6</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090678011" target="_blank">200 pilot → ₹5L/mo</a> <span class="prod">PPMC</span> <span class="sig build">Building</span></td><td class="c"><span class="muted">—</span></td><td class="c"><span class="tp high">High</span></td></tr>
+<tr class=""><td><span class="mc">TSK-5025</span></td><td>Programme</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090705025" target="_blank">Identify first 2 insurers for AI MER; launch Sep</a></td><td><span class="mc">M18</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684023" target="_blank">Launch Sep, first 2 insurers</a> <span class="prod">AI MER</span> <span class="sig build">Building</span></td><td class="c">31 Aug</td><td class="c"><span class="tp high">High</span></td></tr>
+<tr class=""><td><span class="mc">TSK-5031</span></td><td>Programme</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090705031" target="_blank">Reduce outstanding receivables ₹65.5L (ICICI ₹20.4L, ABSLI ₹15.6L)</a></td><td><span class="mc">M20</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684025" target="_blank">July ₹99.1L + reduce ₹65.5L</a> <span class="prod">All lines</span> <span class="sig warn">At risk</span></td><td class="c">31 Aug</td><td class="c"><span class="tp high">High</span></td></tr>
+<tr class=""><td><span class="mc">TSK-5022</span></td><td>Tata AIA Life</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090705022" target="_blank">Run ECG AI pilot; convert to commercial terms</a></td><td><span class="mc">M13</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684018" target="_blank">ECG AI pilot → commercial</a> <span class="prod">AI ECG</span> <span class="sig build">Building</span></td><td class="c">15 Aug</td><td class="c"><span class="tp high">High</span></td></tr>
+<tr class=""><td><span class="mc">TSK-7083</span></td><td>Tata AIA Life</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090987083" target="_blank">Commercials closure, Tata AIA</a></td><td><span class="mc">M13</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684018" target="_blank">ECG AI pilot → commercial</a> <span class="prod">AI ECG</span> <span class="sig build">Building</span></td><td class="c">04 Aug</td><td class="c"><span class="tp high">High</span></td></tr>
+<tr class=""><td><span class="mc">TSK-7061</span></td><td>Thyrocare</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090987061" target="_blank">Thyrocare agreement signoff</a></td><td><span class="mc">M7</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090678012" target="_blank">Device delivery + instalment 2</a> <span class="prod">AI ECG</span> <span class="sig good">On track</span></td><td class="c">18 Aug</td><td class="c"><span class="tp high">High</span></td></tr>
+<tr class=""><td><span class="mc">TSK-7065</span></td><td>Thyrocare</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090987065" target="_blank">PO issuance on 100 ECG devices</a></td><td><span class="mc">M7</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090678012" target="_blank">Device delivery + instalment 2</a> <span class="prod">AI ECG</span> <span class="sig good">On track</span></td><td class="c">20 Aug</td><td class="c"><span class="tp high">High</span></td></tr>
+<tr class=""><td><span class="mc">TSK-7069</span></td><td>Thyrocare</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090987069" target="_blank">Invoicing for 50 ECG units</a></td><td><span class="mc">M7</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090678012" target="_blank">Device delivery + instalment 2</a> <span class="prod">AI ECG</span> <span class="sig good">On track</span></td><td class="c">25 Aug</td><td class="c"><span class="tp high">High</span></td></tr>
+<tr class=""><td><span class="mc">TSK-7073</span></td><td>Thyrocare</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090987073" target="_blank">Collection of invoice, 50 ECG units</a></td><td><span class="mc">M7</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090678012" target="_blank">Device delivery + instalment 2</a> <span class="prod">AI ECG</span> <span class="sig good">On track</span></td><td class="c">28 Aug</td><td class="c"><span class="tp high">High</span></td></tr>
+<tr class=""><td><span class="mc">TSK-7077</span></td><td>Thyrocare</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090987077" target="_blank">Delivery of 50 ECG units to Thyrocare</a></td><td><span class="mc">M7</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090678012" target="_blank">Device delivery + instalment 2</a> <span class="prod">AI ECG</span> <span class="sig good">On track</span></td><td class="c"><span class="muted">—</span></td><td class="c"><span class="tp high">High</span></td></tr>
+<tr class=""><td><span class="mc">TSK-5013</span></td><td>Aditya Birla Sun Life</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090705013" target="_blank">Incoming (registration) + Status Update API</a></td><td><span class="mc">M8</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684013" target="_blank">Stabilize service to scale</a> <span class="prod">PPMC</span> <span class="sig warn">At risk</span></td><td class="c">31 Aug</td><td class="c"><span class="tp normal">Normal</span></td></tr>
+<tr class=""><td><span class="mc">TSK-5007</span></td><td>Canara HSBC Life</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090705007" target="_blank">Case closure API (development)</a></td><td><span class="mc">M1</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090678006" target="_blank">Ramp to ₹5.5L/mo</a> <span class="prod">PPMC</span> <span class="sig build">Building</span></td><td class="c">15 Aug</td><td class="c"><span class="tp normal">Normal</span></td></tr>
+<tr class=""><td><span class="mc">TSK-2003</span></td><td>Canara HSBC Life</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000091142003" target="_blank">Canara: Provide Smart Report</a></td><td><span class="mc">M1</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090678006" target="_blank">Ramp to ₹5.5L/mo</a> <span class="prod">PPMC</span> <span class="sig build">Building</span></td><td class="c">11 Aug</td><td class="c"><span class="tp normal">Normal</span></td></tr>
+<tr class=""><td><span class="mc">TSK-5029</span></td><td>ICICI Prudential</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090705029" target="_blank">Strategy deck → first meeting</a></td><td><span class="mc">M17</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684022" target="_blank">Strategy deck → first meeting</a> <span class="prod">PPMC</span> <span class="sig grey">Qualifying</span></td><td class="c">15 Sep</td><td class="c"><span class="tp normal">Normal</span></td></tr>
+<tr class=""><td><span class="mc">TSK-5026</span></td><td>Programme</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090705026" target="_blank">Launch Doctor VMER Oct-26</a></td><td><span class="mc">M19</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684024" target="_blank">Launch Oct</a> <span class="prod">Dr VMER</span> <span class="sig grey">Qualifying</span></td><td class="c">30 Sep</td><td class="c"><span class="tp normal">Normal</span></td></tr>
+<tr class=""><td><span class="mc">TSK-5015</span></td><td>SUD Life</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090705015" target="_blank">Incoming (registration) + Status Update API</a></td><td><span class="mc">M9</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684014" target="_blank">5× via realignment</a> <span class="prod">PPMC</span> <span class="sig build">Building</span></td><td class="c">31 Aug</td><td class="c"><span class="tp normal">Normal</span></td></tr>
+<tr class=""><td><span class="mc">TSK-5023</span></td><td>Tata AIA Life</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090705023" target="_blank">Complete VMER testing (development)</a></td><td><span class="mc">M14</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684019" target="_blank">Complete VMER testing</a> <span class="prod">Dr VMER</span> <span class="sig grey">Qualifying</span></td><td class="c">31 Aug</td><td class="c"><span class="tp normal">Normal</span></td></tr>
+<tr class=""><td><span class="mc">TSK-5028</span></td><td>Tata AIG</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090705028" target="_blank">Schedule reactivation meeting (peak 632/mo)</a></td><td><span class="mc">M16</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090684021" target="_blank">Reactivation (peak 632/mo)</a> <span class="prod">PPMC</span> <span class="sig grey">Qualifying</span></td><td class="c">31 Aug</td><td class="c"><span class="tp normal">Normal</span></td></tr>
+<tr class=""><td><span class="mc">TSK-5006</span></td><td>Canara HSBC Life</td><td><a href="https://crm.zoho.com/crm/org55302521/tab/Tasks/1575152000090705006" target="_blank">Share billing provisional data by 23rd</a></td><td><span class="mc">M1</span> <a href="https://crm.zoho.com/crm/org55302521/tab/Deals/1575152000090678006" target="_blank">Ramp to ₹5.5L/mo</a> <span class="prod">PPMC</span> <span class="sig build">Building</span></td><td class="c">23 Aug</td><td class="c"><span class="tp low">Low</span></td></tr>
+</tbody></table>
+<div class="legend"><b>2 tasks are overdue</b> (due before 3 Aug and still open), highlighted red and floated to the top for follow-up. Then all other open tasks, highest priority first. The Milestone column carries the deal, product line and current health. Each task links to its Zoho Activity.</div>
+
+<div class="foot">Each milestone links to its Deal, each issue to its Case, each task to its Activity in Zoho CRM; Desk figures link to the account in Zoho Desk. Open CRM issues are the team's logged Cases, now 10 open: 2 carried in progress (Canara MIS, ABSLI MIS) plus 8 raised today from the account-manager review across ABSLI, Canara, SUD and Bajaj. The weekday 8:30 IST engine works this same data. This page is a static snapshot, so it reflects Zoho as of the Last updated time above, not live on load.</div>
+</div></body></html>
